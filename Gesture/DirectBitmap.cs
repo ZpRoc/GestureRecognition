@@ -24,6 +24,36 @@ namespace Gesture
         // ---------------------------------------------------------------------------------------------------- //
         // ---------------------------------------------------------------------------------------------------- //
 
+        /// <summary>
+        /// Draw a circle in the Bitmap
+        /// </summary>
+        /// <param name="x0"></param>
+        /// <param name="y0"></param>
+        /// <param name="r0"></param>
+        /// <param name="color"></param>
+        public void SetCircle(int x0, int y0, int r0, Color color)
+        {
+            // Limit the coordinate
+            int x_s = x0 - r0 > 0 ? x0 - r0 : 0;
+            int y_s = y0 - r0 > 0 ? y0 - r0 : 0;
+            int x_e = x0 + r0 <  Width ? x0 + r0 :  Width - 1;
+            int y_e = y0 + r0 < Height ? y0 + r0 : Height - 1;
+
+
+            // Set pixels
+            for (int x = x_s; x <= x_e; x++)
+            {
+                for (int y = y_s; y <= y_e; y++)
+                {
+                    SetPixel(x, y, color);
+                }
+            }
+        }
+
+        // ---------------------------------------------------------------------------------------------------- //
+        // ---------------------------------------------------------------------------------------------------- //
+        // ---------------------------------------------------------------------------------------------------- //
+
 		public void SetPixel(int x, int y, Color colour)
 		{
 			int index = x + (y * Width);

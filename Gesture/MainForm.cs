@@ -198,23 +198,38 @@ namespace Gesture
 			// Write skeleton joints
 			if (_skeletonData != null)
 			{
+                // Draw joint size
+	            const int jointSize = 5;
+
                 // Loop for users 
 				foreach (var skeleton in _skeletonData.Skeletons)
 				{
                     // Loop for joints
 					foreach (var joint in skeleton.Joints)
 					{
+                        // Update the _bitmap
+                        _bitmap.SetCircle((int)(joint.Proj.X * _bitmap.Width), (int)(joint.Proj.Y * _bitmap.Height),
+							              jointSize, Color.FromArgb(255, 255, 0, 0));
+
                         // Add skeleton data
                         m_skeletonDataList.Add((double)joint.Real.X);
                         m_skeletonDataList.Add((double)joint.Real.Y);
                         m_skeletonDataList.Add((double)joint.Real.Z);
 					}
+
+                    // Only add user 1
+                    break;
 				}
 			}
 
             // -------------------- Write data -------------------- //
             // There are 25 points-3d in skeletonDataList for each user.
-            string skeletonDataStr = m_zpHandle.GetSkeletonData(m_frameCounter, m_skeletonDataList);
+            if (m_IS_WRITE_DATA)
+            {
+                string skeletonDataStr = m_zpHandle.GetSkeletonData(m_frameCounter, m_skeletonDataList);
+                m_fileHandle.WriteMsg(skeletonDataStr);
+                m_fileHandle.WriteImg(_bitmap.Bitmap, m_frameCounter.ToString("00000"));
+            }
 
             // -------------------- Disp -------------------- //
             // Disp running time
@@ -269,7 +284,8 @@ namespace Gesture
                 m_IS_WRITE_DATA       = true;
 
                 // Set the output file path
-                m_fileHandle.FilePath = string.Format("Output//{0}.txt", DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss"));
+                m_fileHandle.SetFolder(string.Format("Output//{0}", DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")));
+                m_fileHandle.WriteMsg("Skeleton data (X, Y, Z) * 25 points. ");
             }
             else
             {
@@ -332,67 +348,71 @@ namespace Gesture
 			// Draw a bitmap (color model or depth model)
 			args.Graphics.DrawImage(_bitmap.Bitmap, new Point(0, 0));
 
-			// Draw skeleton joints
-			if (_skeletonData != null)
-			{
+            #region no use, comment
+            /*
+            // Draw skeleton joints
+            if (_skeletonData != null)
+            {
                 // Draw joint size
-				const int jointSize = 10;
+                const int jointSize = 10;
 
                 // Loop for users 
-				foreach (var skeleton in _skeletonData.Skeletons)
-				{
+                foreach (var skeleton in _skeletonData.Skeletons)
+                {
                     // Define brush
-					SolidBrush brush = new SolidBrush(Color.FromArgb(255 - 40 * skeleton.ID, 0, 0));
+                    SolidBrush brush = new SolidBrush(Color.FromArgb(255 - 40 * skeleton.ID, 0, 0));
 
                     // Loop for joints
-					foreach (var joint in skeleton.Joints)
-					{
+                    foreach (var joint in skeleton.Joints)
+                    {
                         // Draw
-						args.Graphics.FillEllipse(brush, joint.Proj.X * _bitmap.Width - jointSize / 2,
-												  joint.Proj.Y * _bitmap.Height - jointSize / 2, jointSize, jointSize);
-					}
-				}
-			}
+                        args.Graphics.FillEllipse(brush, joint.Proj.X * _bitmap.Width - jointSize / 2,
+                                                  joint.Proj.Y * _bitmap.Height - jointSize / 2, jointSize, jointSize);
+                    }
+                }
+            }
 
-			// Draw hand pointers
-			if (_handTrackerData != null)
-			{
-				foreach (var userHands in _handTrackerData.UsersHands)
-				{
-					if (userHands.LeftHand != null)
-					{
+            // Draw hand pointers
+            if (_handTrackerData != null)
+            {
+                foreach (var userHands in _handTrackerData.UsersHands)
+                {
+                    if (userHands.LeftHand != null)
+                    {
                         // Get left hand value
-						HandContent hand = userHands.LeftHand.Value;
-						int size = hand.Click ? 20 : 30;
+                        HandContent hand = userHands.LeftHand.Value;
+                        int size = hand.Click ? 20 : 30;
 
                         // Define brush
-						Brush brush = new SolidBrush(Color.Aquamarine);
+                        Brush brush = new SolidBrush(Color.Aquamarine);
 
                         // Draw left hand
-						args.Graphics.FillEllipse(brush, hand.X * _bitmap.Width - size/2, hand.Y * _bitmap.Height - size / 2, size, size);
+                        args.Graphics.FillEllipse(brush, hand.X * _bitmap.Width - size / 2, hand.Y * _bitmap.Height - size / 2, size, size);
                     }
 
-					if (userHands.RightHand != null)
-					{
+                    if (userHands.RightHand != null)
+                    {
                         // Get right hand value
-						HandContent hand = userHands.RightHand.Value;
-						int size = hand.Click ? 20 : 30;
+                        HandContent hand = userHands.RightHand.Value;
+                        int size = hand.Click ? 20 : 30;
 
                         // Define brush
-						Brush brush = new SolidBrush(Color.DarkBlue);
+                        Brush brush = new SolidBrush(Color.DarkBlue);
 
                         // Draw right hand
-						args.Graphics.FillEllipse(brush, hand.X * _bitmap.Width - size/2, hand.Y * _bitmap.Height - size / 2, size, size);
-					}
-				}
-			}
-		}
-           
+                        args.Graphics.FillEllipse(brush, hand.X * _bitmap.Width - size / 2, hand.Y * _bitmap.Height - size / 2, size, size);
+                    }
+                }
+            }
+            */
+            #endregion
+        }
+
         /// <summary>
         /// Event handler for the FormClosing event
         /// </summary>
         /// <param name="e"></param>
-		protected override void OnFormClosing(FormClosingEventArgs e)
+        protected override void OnFormClosing(FormClosingEventArgs e)
 		{
 			// Release Nuitrack and remove all modules
 			try
