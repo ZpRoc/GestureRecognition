@@ -30,14 +30,22 @@ namespace Gesture
 		private HandTrackerData _handTrackerData;       // person hands data
 		private IssuesData      _issuesData = null;
 
+        // Global flag
+        bool m_IS_WRITE_DATA = false;       // Write skeleton data?
+        bool m_IS_AUTO       = false;       // Recognize the gesture automatically
+
         // Running time
-        const int MAX_TIME_RECORD = 100;
+        const int m_MAX_TIME_RECORD = 100;
         List<double> m_runningTimeList = new List<double>();
 
         // Frame counter
         int m_frameCounter = 0;
 
-        // Write data
+        // Define handle
+        FileHandle m_fileHandle = new FileHandle();     // Output infos
+        ZpHandle m_zpHandle     = new ZpHandle();       // Some useful functions
+
+        // Data variables
         List<double> m_skeletonDataList = new List<double>();
 
         public MainForm()
@@ -141,9 +149,18 @@ namespace Gesture
 		}
 
         // ---------------------------------------------------------------------------------------------------- //
-        // ---------------------------------------------------------------------------------------------------- //
+        // ---------------------------------- Important form control events ----------------------------------- //
         // ---------------------------------------------------------------------------------------------------- //
 
+        /// <summary>
+        /// timerGrab, doing everything
+        ///     Updata the _skeletonTracker
+        ///     Get and write data
+        ///     Recognize the gesture
+        ///     Disp result
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void timerGrab_Tick(object sender, EventArgs e)
         {
             DateTime startTime = DateTime.Now;
@@ -160,6 +177,9 @@ namespace Gesture
                     // onHandTrackerUpdate: Update _handTrackerData
                     // onIssueDataUpdate  : Update _issuesData
 				Nuitrack.Update(_skeletonTracker);
+
+                // Count frame
+                m_frameCounter++;
 			}
 			catch(LicenseNotAcquiredException exception)
 			{
@@ -173,7 +193,7 @@ namespace Gesture
 
             // -------------------- Get data -------------------- //
             // Clear
-             m_skeletonDataList.Clear();
+            m_skeletonDataList.Clear();
 
 			// Write skeleton joints
 			if (_skeletonData != null)
@@ -194,19 +214,18 @@ namespace Gesture
 
             // -------------------- Write data -------------------- //
             // There are 25 points-3d in skeletonDataList for each user.
-            if (m_skeletonDataList.Count != 0)
-            {
-                // Disp skeleton data
-                DispSkeletonData(m_skeletonDataList);
-                
-            }
+            string skeletonDataStr = m_zpHandle.GetSkeletonData(m_frameCounter, m_skeletonDataList);
+
+            // -------------------- Disp -------------------- //
+            // Disp running time
+            m_runningTimeList.Add((DateTime.Now - startTime).TotalMilliseconds);
+            m_zpHandle.DispRunningTime(m_frameCounter, m_runningTimeList, m_MAX_TIME_RECORD, ref statusStripTime);
+
+            // Disp skeleton data
+            m_zpHandle.DispSkeletonData(m_skeletonDataList, ref textBoxSkeletonData);
 
             // -------------------- Refresh main from -------------------- //
             this.Refresh();
-
-            // -------------------- Output running time -------------------- //
-            m_runningTimeList.Add((DateTime.Now - startTime).TotalMilliseconds);
-            DispRunningTime(m_runningTimeList, MAX_TIME_RECORD);
         }
 
         /// <summary>
@@ -214,62 +233,81 @@ namespace Gesture
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonStartGrab_Click(object sender, EventArgs e)
+        private void buttonGrab_Click(object sender, EventArgs e)
         {
-            if (timerGrab.Enabled == false)
+            if (Convert.ToInt32(buttonGrab.Tag) == 0)
             {
-                timerGrab.Enabled = true;
-                buttonGrab.Text = "Stop Grab";
-                buttonGrab.BackColor = new SystemColors()
+                timerGrab.Enabled    = true;
+                buttonGrab.Tag       = 1;
+                buttonGrab.Text      = "Grab ◼";
+                buttonGrab.BackColor = Color.GreenYellow;
             }
             else
             {
-                timerGrab.Enabled = false;
-                buttonGrab.Text = "Start Grab";
+                timerGrab.Enabled    = false;
+                buttonGrab.Tag       = 0;
+                buttonGrab.Text      = "Grab ▶";
+                buttonGrab.BackColor = Color.FromArgb(0, 255, 255, 255);
             }
         }
 
         /// <summary>
-        /// Disp running time
+        /// Enabled or disabled write skeleton data
         /// </summary>
-        /// <param name="timeList"></param>
-        /// <param name="maxRecord"></param>
-        private void DispRunningTime(List<double> timeList, int maxRecord)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonWrite_Click(object sender, EventArgs e)
         {
-            // Remove the old one
-            if (timeList.Count > maxRecord)
+            if (Convert.ToInt32(buttonWrite.Tag) == 0)
             {
-                timeList.RemoveRange(0, timeList.Count - maxRecord);
+                // Update the button control format
+                buttonWrite.Tag       = 1;
+                buttonWrite.Text      = "Write ◼";
+                buttonWrite.BackColor = Color.GreenYellow;
+
+                // Set the global flag
+                m_IS_WRITE_DATA       = true;
+
+                // Set the output file path
+                m_fileHandle.FilePath = string.Format("Output//{0}.txt", DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss"));
             }
+            else
+            {
+                // Update the button control format
+                buttonWrite.Tag       = 0;
+                buttonWrite.Text      = "Write ▶";
+                buttonWrite.BackColor = Color.FromArgb(0, 255, 255, 255);
 
-            // Cur time
-            toolStripStatusLabelCurTime.Text = string.Format("Cur: {0} ms", timeList[timeList.Count - 1].ToString("00.00"));
-
-            // Avg time
-            toolStripStatusLabelAvgTime.Text = string.Format("Avg: {0} ms", timeList.Average().ToString("00.00"));
-
-            // Max time
-            toolStripStatusLabelMaxTime.Text = string.Format("Max: {0} ms", timeList.Max().ToString("00.00"));
+                // Set the global flag
+                m_IS_WRITE_DATA       = false;
+            }
         }
 
         /// <summary>
-        /// Disp skeleton data
+        /// Enabled or disabled recognize the gesture automatically
         /// </summary>
-        /// <param name="skeletonData"></param>
-        private void DispSkeletonData(List<double> skeletonData)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonAuto_Click(object sender, EventArgs e)
         {
-            string disp_str = "          X           Y           Z   ";
-            for (int i = 0; i < skeletonData.Count; i+=3)
+            if (Convert.ToInt32(buttonAuto.Tag) == 0)
             {
-                disp_str += Environment.NewLine;
-                disp_str += string.Format("{0, 2}   {1, 9}   {2, 9}   {3, 9}", (i/3+1).ToString("00"), skeletonData[i+0].ToString("0.000"), 
-                                            skeletonData[i+1].ToString("0.000"), skeletonData[i+2].ToString("0.000"));
+                m_IS_AUTO            = true;
+                buttonAuto.Tag       = 1;
+                buttonAuto.Text      = "Auto ◼";
+                buttonAuto.BackColor = Color.GreenYellow;
             }
-            textBoxSkeletonData.Text = disp_str;
+            else
+            {
+                m_IS_AUTO            = false;
+                buttonAuto.Tag       = 0;
+                buttonAuto.Text      = "Auto ▶";
+                buttonAuto.BackColor = Color.FromArgb(0, 255, 255, 255);
+            }
         }
 
         // ---------------------------------------------------------------------------------------------------- //
-        // ---------------------------------------------------------------------------------------------------- //
+        // --------------------------------------- Form control events ---------------------------------------- //
         // ---------------------------------------------------------------------------------------------------- //
 
 		/// <summary>
@@ -349,9 +387,36 @@ namespace Gesture
 				}
 			}
 		}
+           
+        /// <summary>
+        /// Event handler for the FormClosing event
+        /// </summary>
+        /// <param name="e"></param>
+		protected override void OnFormClosing(FormClosingEventArgs e)
+		{
+			// Release Nuitrack and remove all modules
+			try
+			{
+				Nuitrack.onIssueUpdateEvent -= onIssueDataUpdate;
+
+				_depthSensor.OnUpdateEvent             -= onDepthSensorUpdate;
+				_colorSensor.OnUpdateEvent             -= onColorSensorUpdate;
+				_userTracker.OnUpdateEvent             -= onUserTrackerUpdate;
+				_skeletonTracker.OnSkeletonUpdateEvent -= onSkeletonUpdate;
+				_handTracker.OnUpdateEvent             -= onHandTrackerUpdate;
+				_gestureRecognizer.OnNewGesturesEvent  -= onNewGestures;
+
+				Nuitrack.Release();
+			}
+			catch(System.Exception exception)
+			{
+				Trace.WriteLine("Nuitrack release failed.");
+				throw exception;
+			}
+		}
 
         // ---------------------------------------------------------------------------------------------------- //
-        // ---------------------------------------------------------------------------------------------------- //
+        // --------------------------------------- Updata camera datas ---------------------------------------- //
         // ---------------------------------------------------------------------------------------------------- //
 
         /// <summary>
@@ -426,7 +491,7 @@ namespace Gesture
 		}
 
         // ---------------------------------------------------------------------------------------------------- //
-        // ---------------------------------------------------------------------------------------------------- //
+        // ---------------------------------------- NUITRICK handlers ----------------------------------------- //
         // ---------------------------------------------------------------------------------------------------- //
 
 		/// <summary>
@@ -540,37 +605,5 @@ namespace Gesture
 				Trace.WriteLine(string.Format("Recognized {0} from user {1}", gesture.Type.ToString(), gesture.UserID));
 		}
 
-        // ---------------------------------------------------------------------------------------------------- //
-        // ---------------------------------------------------------------------------------------------------- //
-        // ---------------------------------------------------------------------------------------------------- //
-
-        /// <summary>
-        /// Event handler for the FormClosing event
-        /// </summary>
-        /// <param name="e"></param>
-		protected override void OnFormClosing(FormClosingEventArgs e)
-		{
-			// Release Nuitrack and remove all modules
-			try
-			{
-				Nuitrack.onIssueUpdateEvent -= onIssueDataUpdate;
-
-				_depthSensor.OnUpdateEvent             -= onDepthSensorUpdate;
-				_colorSensor.OnUpdateEvent             -= onColorSensorUpdate;
-				_userTracker.OnUpdateEvent             -= onUserTrackerUpdate;
-				_skeletonTracker.OnSkeletonUpdateEvent -= onSkeletonUpdate;
-				_handTracker.OnUpdateEvent             -= onHandTrackerUpdate;
-				_gestureRecognizer.OnNewGesturesEvent  -= onNewGestures;
-
-				Nuitrack.Release();
-			}
-			catch(System.Exception exception)
-			{
-				Trace.WriteLine("Nuitrack release failed.");
-				throw exception;
-			}
-		}
-
-        
     }
 }

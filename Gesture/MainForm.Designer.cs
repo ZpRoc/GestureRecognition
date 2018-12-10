@@ -30,15 +30,17 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panelControl = new System.Windows.Forms.Panel();
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabPageGrab = new System.Windows.Forms.TabPage();
+            this.buttonAuto = new System.Windows.Forms.Button();
+            this.buttonWrite = new System.Windows.Forms.Button();
+            this.buttonGrab = new System.Windows.Forms.Button();
+            this.textBoxSkeletonData = new System.Windows.Forms.TextBox();
             this.statusStripTime = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabelFrameCounter = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelCurTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelAvgTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelMaxTime = new System.Windows.Forms.ToolStripStatusLabel();
-            this.timerGrab = new System.Windows.Forms.Timer(this.components);
-            this.buttonGrab = new System.Windows.Forms.Button();
-            this.textBoxSkeletonData = new System.Windows.Forms.TextBox();
-            this.tabControl = new System.Windows.Forms.TabControl();
-            this.tabPageGrab = new System.Windows.Forms.TabPage();
             this.tabPageLabel = new System.Windows.Forms.TabPage();
             this.buttonStand = new System.Windows.Forms.Button();
             this.buttonTurnBack = new System.Windows.Forms.Button();
@@ -46,10 +48,11 @@
             this.buttonStandUp = new System.Windows.Forms.Button();
             this.buttonWalking = new System.Windows.Forms.Button();
             this.tabPageConfig = new System.Windows.Forms.TabPage();
+            this.timerGrab = new System.Windows.Forms.Timer(this.components);
             this.panelControl.SuspendLayout();
-            this.statusStripTime.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPageGrab.SuspendLayout();
+            this.statusStripTime.SuspendLayout();
             this.tabPageLabel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -62,9 +65,84 @@
             this.panelControl.Size = new System.Drawing.Size(368, 480);
             this.panelControl.TabIndex = 0;
             // 
+            // tabControl
+            // 
+            this.tabControl.Controls.Add(this.tabPageGrab);
+            this.tabControl.Controls.Add(this.tabPageLabel);
+            this.tabControl.Controls.Add(this.tabPageConfig);
+            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.tabControl.Location = new System.Drawing.Point(0, 0);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(368, 480);
+            this.tabControl.TabIndex = 8;
+            // 
+            // tabPageGrab
+            // 
+            this.tabPageGrab.Controls.Add(this.buttonAuto);
+            this.tabPageGrab.Controls.Add(this.buttonWrite);
+            this.tabPageGrab.Controls.Add(this.buttonGrab);
+            this.tabPageGrab.Controls.Add(this.textBoxSkeletonData);
+            this.tabPageGrab.Controls.Add(this.statusStripTime);
+            this.tabPageGrab.Location = new System.Drawing.Point(4, 26);
+            this.tabPageGrab.Name = "tabPageGrab";
+            this.tabPageGrab.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageGrab.Size = new System.Drawing.Size(360, 450);
+            this.tabPageGrab.TabIndex = 0;
+            this.tabPageGrab.Text = "Grab";
+            this.tabPageGrab.UseVisualStyleBackColor = true;
+            // 
+            // buttonAuto
+            // 
+            this.buttonAuto.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonAuto.Location = new System.Drawing.Point(254, 82);
+            this.buttonAuto.Name = "buttonAuto";
+            this.buttonAuto.Size = new System.Drawing.Size(100, 32);
+            this.buttonAuto.TabIndex = 9;
+            this.buttonAuto.Tag = "0";
+            this.buttonAuto.Text = "Auto ▶";
+            this.buttonAuto.UseVisualStyleBackColor = true;
+            this.buttonAuto.Click += new System.EventHandler(this.buttonAuto_Click);
+            // 
+            // buttonWrite
+            // 
+            this.buttonWrite.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonWrite.Location = new System.Drawing.Point(254, 44);
+            this.buttonWrite.Name = "buttonWrite";
+            this.buttonWrite.Size = new System.Drawing.Size(100, 32);
+            this.buttonWrite.TabIndex = 8;
+            this.buttonWrite.Tag = "0";
+            this.buttonWrite.Text = "Write ▶";
+            this.buttonWrite.UseVisualStyleBackColor = true;
+            this.buttonWrite.Click += new System.EventHandler(this.buttonWrite_Click);
+            // 
+            // buttonGrab
+            // 
+            this.buttonGrab.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonGrab.Location = new System.Drawing.Point(254, 6);
+            this.buttonGrab.Name = "buttonGrab";
+            this.buttonGrab.Size = new System.Drawing.Size(100, 32);
+            this.buttonGrab.TabIndex = 6;
+            this.buttonGrab.Tag = "0";
+            this.buttonGrab.Text = "Grab ▶";
+            this.buttonGrab.UseVisualStyleBackColor = true;
+            this.buttonGrab.Click += new System.EventHandler(this.buttonGrab_Click);
+            // 
+            // textBoxSkeletonData
+            // 
+            this.textBoxSkeletonData.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 8F);
+            this.textBoxSkeletonData.Location = new System.Drawing.Point(6, 6);
+            this.textBoxSkeletonData.Multiline = true;
+            this.textBoxSkeletonData.Name = "textBoxSkeletonData";
+            this.textBoxSkeletonData.Size = new System.Drawing.Size(242, 414);
+            this.textBoxSkeletonData.TabIndex = 7;
+            this.textBoxSkeletonData.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // statusStripTime
             // 
             this.statusStripTime.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabelFrameCounter,
             this.toolStripStatusLabelCurTime,
             this.toolStripStatusLabelAvgTime,
             this.toolStripStatusLabelMaxTime});
@@ -73,6 +151,12 @@
             this.statusStripTime.Size = new System.Drawing.Size(354, 22);
             this.statusStripTime.TabIndex = 5;
             this.statusStripTime.Text = "statusStripTime";
+            // 
+            // toolStripStatusLabelFrameCounter
+            // 
+            this.toolStripStatusLabelFrameCounter.Name = "toolStripStatusLabelFrameCounter";
+            this.toolStripStatusLabelFrameCounter.Size = new System.Drawing.Size(43, 17);
+            this.toolStripStatusLabelFrameCounter.Text = "00000";
             // 
             // toolStripStatusLabelCurTime
             // 
@@ -92,59 +176,6 @@
             this.toolStripStatusLabelMaxTime.Size = new System.Drawing.Size(92, 17);
             this.toolStripStatusLabelMaxTime.Tag = "";
             this.toolStripStatusLabelMaxTime.Text = "Max: 00.00 ms";
-            // 
-            // timerGrab
-            // 
-            this.timerGrab.Interval = 32;
-            this.timerGrab.Tick += new System.EventHandler(this.timerGrab_Tick);
-            // 
-            // buttonGrab
-            // 
-            this.buttonGrab.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonGrab.Location = new System.Drawing.Point(254, 6);
-            this.buttonGrab.Name = "buttonGrab";
-            this.buttonGrab.Size = new System.Drawing.Size(100, 32);
-            this.buttonGrab.TabIndex = 6;
-            this.buttonGrab.Text = "Grab";
-            this.buttonGrab.UseVisualStyleBackColor = true;
-            this.buttonGrab.Click += new System.EventHandler(this.buttonStartGrab_Click);
-            // 
-            // textBoxSkeletonData
-            // 
-            this.textBoxSkeletonData.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 8F);
-            this.textBoxSkeletonData.Location = new System.Drawing.Point(6, 6);
-            this.textBoxSkeletonData.Multiline = true;
-            this.textBoxSkeletonData.Name = "textBoxSkeletonData";
-            this.textBoxSkeletonData.Size = new System.Drawing.Size(242, 414);
-            this.textBoxSkeletonData.TabIndex = 7;
-            this.textBoxSkeletonData.Text = "00   00000.000   00000.000   00000.000";
-            this.textBoxSkeletonData.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tabControl
-            // 
-            this.tabControl.Controls.Add(this.tabPageGrab);
-            this.tabControl.Controls.Add(this.tabPageLabel);
-            this.tabControl.Controls.Add(this.tabPageConfig);
-            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.tabControl.Location = new System.Drawing.Point(0, 0);
-            this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(368, 480);
-            this.tabControl.TabIndex = 8;
-            // 
-            // tabPageGrab
-            // 
-            this.tabPageGrab.Controls.Add(this.buttonGrab);
-            this.tabPageGrab.Controls.Add(this.textBoxSkeletonData);
-            this.tabPageGrab.Controls.Add(this.statusStripTime);
-            this.tabPageGrab.Location = new System.Drawing.Point(4, 26);
-            this.tabPageGrab.Name = "tabPageGrab";
-            this.tabPageGrab.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGrab.Size = new System.Drawing.Size(360, 450);
-            this.tabPageGrab.TabIndex = 0;
-            this.tabPageGrab.Text = "Grab";
-            this.tabPageGrab.UseVisualStyleBackColor = true;
             // 
             // tabPageLabel
             // 
@@ -220,6 +251,11 @@
             this.tabPageConfig.Text = "Config";
             this.tabPageConfig.UseVisualStyleBackColor = true;
             // 
+            // timerGrab
+            // 
+            this.timerGrab.Interval = 32;
+            this.timerGrab.Tick += new System.EventHandler(this.timerGrab_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
@@ -232,11 +268,11 @@
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.panelControl.ResumeLayout(false);
-            this.statusStripTime.ResumeLayout(false);
-            this.statusStripTime.PerformLayout();
             this.tabControl.ResumeLayout(false);
             this.tabPageGrab.ResumeLayout(false);
             this.tabPageGrab.PerformLayout();
+            this.statusStripTime.ResumeLayout(false);
+            this.statusStripTime.PerformLayout();
             this.tabPageLabel.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -261,6 +297,9 @@
         private System.Windows.Forms.Button buttonWalking;
         private System.Windows.Forms.TabPage tabPageGrab;
         private System.Windows.Forms.TabPage tabPageConfig;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelFrameCounter;
+        private System.Windows.Forms.Button buttonWrite;
+        private System.Windows.Forms.Button buttonAuto;
     }
 }
 
