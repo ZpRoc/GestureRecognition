@@ -485,6 +485,37 @@ namespace Gesture
         }
 
         /// <summary>
+        /// Auto select the next CombineData
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonAutoSelect_Click(object sender, EventArgs e)
+        {
+            // Calculate the cnout about select items
+            int cntTotal = Convert.ToInt32(numericUpDownCombineData.Value);
+            int cntCur   = listBoxData.SelectedIndices.Count;
+            int cntNeed  = cntCur >= cntTotal ? cntTotal : cntTotal - cntCur;
+
+            // Do we have enough data lfet?
+            int indexCur = listBoxData.SelectedIndices[cntCur - 1];
+            if (listBoxData.Items.Count - indexCur - 1 < cntNeed)
+            {
+                MessageBox.Show("Do not have enough datas. ");
+                return;
+            }
+
+            // Add items
+            if (cntNeed == cntTotal)
+            {
+                listBoxData.SelectedIndices.Clear();
+            }
+            for (int i = 0; i < cntNeed; i++)
+            {
+                listBoxData.SelectedIndices.Add(++indexCur);
+            }
+        }
+
+        /// <summary>
         /// Write Stand label data
         /// </summary>
         /// <param name="sender"></param>
@@ -508,7 +539,6 @@ namespace Gesture
             }
             finally
             {
-                listBoxData.SelectedItems.Clear();
                 buttonStand.Enabled    = false;
                 buttonWalking.Enabled  = false;
                 buttonStandUp.Enabled  = false;
@@ -541,7 +571,6 @@ namespace Gesture
             }
             finally
             {
-                listBoxData.SelectedItems.Clear();
                 buttonStand.Enabled    = false;
                 buttonWalking.Enabled  = false;
                 buttonStandUp.Enabled  = false;
@@ -574,7 +603,6 @@ namespace Gesture
             }
             finally
             {
-                listBoxData.SelectedItems.Clear();
                 buttonStand.Enabled    = false;
                 buttonWalking.Enabled  = false;
                 buttonStandUp.Enabled  = false;
@@ -607,7 +635,6 @@ namespace Gesture
             }
             finally
             {
-                listBoxData.SelectedItems.Clear();
                 buttonStand.Enabled    = false;
                 buttonWalking.Enabled  = false;
                 buttonStandUp.Enabled  = false;
@@ -640,7 +667,6 @@ namespace Gesture
             }
             finally
             {
-                listBoxData.SelectedItems.Clear();
                 buttonStand.Enabled    = false;
                 buttonWalking.Enabled  = false;
                 buttonStandUp.Enabled  = false;
