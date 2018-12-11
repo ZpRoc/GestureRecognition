@@ -10,21 +10,37 @@ namespace Gesture
 {
     public class FileHandle
     {
-        private string m_outputFolder  = string.Empty;        // 输出文件夹
-        private string m_imageFolder = "Images";            // 输出图像文件夹
-        private string m_dataFile    = "default.txt";       // 输出数据 txt 文件名
+        private string[] m_labelnames;
 
+        private string m_IMAGE_FOLDER_NAME = "Images";      // The image folder name
+        private string m_LABEL_FOLDER_NAME = "Labels";      // The label folder name
+        private string m_DATA_FILE_NAME    = "Data.txt";    // The data file name
 
-        public FileHandle()
+        private string m_outputFolder  = string.Empty;      // The output folder
+        private string m_imageFolder   = "Images";          // The image folder
+        private string m_labelFolder   = "Labels";          // The image folder
+        private string m_dataFile      = "default.txt";     // The data file
+
+        public FileHandle(string[] label_names)
         {
+            m_labelnames = label_names;
             SetFolder("Output//Default//");
         }
 
-        public FileHandle(string filefolder)
+        public FileHandle(string[] label_names, string filefolder)
         {
+            m_labelnames = label_names;
             SetFolder(filefolder);
         }
 
+        // ---------------------------------------------------------------------------------------------------- //
+        // ---------------------------------------------------------------------------------------------------- //
+        // ---------------------------------------------------------------------------------------------------- //
+
+        /// <summary>
+        /// Set the output folder and create sub folders and files
+        /// </summary>
+        /// <param name="outputFolder"></param>
         public void SetFolder(string outputFolder)
         {
             // Set the output root folder
@@ -35,25 +51,76 @@ namespace Gesture
             }
 
             // Set the image folder
-            m_imageFolder  = Path.Combine(m_outputFolder, "Images");
+            m_imageFolder = Path.Combine(m_outputFolder, m_IMAGE_FOLDER_NAME);
             if (!Directory.Exists(m_imageFolder))
             {
                 Directory.CreateDirectory(m_imageFolder);
             }
 
             // Set the data txt file
-            m_dataFile     = Path.Combine(m_outputFolder, string.Format("Data {0}.txt", DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")));
+            m_dataFile = Path.Combine(m_outputFolder, m_DATA_FILE_NAME);
+
+            // Set label folder
+            m_labelFolder = Path.Combine(m_outputFolder, m_LABEL_FOLDER_NAME);
+            if (!Directory.Exists(m_labelFolder))
+            {
+                Directory.CreateDirectory(m_labelFolder);
+            }
+
+            for (int i = 0; i < m_labelnames.Length; i++)
+            {
+                string tmpFolder = Path.Combine(m_labelFolder, m_labelnames[i]);
+                if (!Directory.Exists(tmpFolder))
+                {
+                    Directory.CreateDirectory(tmpFolder);
+                }
+            }
         }
+
+        /// <summary>
+        /// Does the given folder has all the sub folders and files
+        /// </summary>
+        /// <param name="outputFolder"></param>
+        /// <returns></returns>
+        public bool IsValidFolder(string outputFolder)
+        {
+            // Is the output root folder exist
+            if (!Directory.Exists(outputFolder))
+            {
+                return (false);
+            }
+
+            // Is the image folder exist
+            string imageFolder = Path.Combine(outputFolder, m_IMAGE_FOLDER_NAME);
+            if (!Directory.Exists(imageFolder))
+            {
+                return (false);
+            }
+
+            // Is the data txt file exist
+            string dataFile = Path.Combine(outputFolder, m_DATA_FILE_NAME);
+            if (!File.Exists(dataFile))
+            {
+                return (false);
+            }
+
+            return (true);
+        }
+
+        // ---------------------------------------------------------------------------------------------------- //
+        // ---------------------------------------------------------------------------------------------------- //
+        // ---------------------------------------------------------------------------------------------------- //
 
         /// <summary>
         /// Read all lines
         /// </summary>
+        /// <param name="url"></param>
         /// <returns></returns>
-        public string[] ReadAllLine()
+        public string[] ReadAllLine(string url)
         {
-            if (File.Exists(m_dataFile))
+            if (File.Exists(url))
             {
-                return (File.ReadAllLines(m_dataFile));
+                return (File.ReadAllLines(url));
             }
             else
             {
@@ -64,18 +131,19 @@ namespace Gesture
         /// <summary>
         /// Write txt file
         /// </summary>
+        /// <param name="url"></param>
         /// <param name="msg"></param>
-        public void WriteMsg(string msg)
+        public void WriteMsg(string url, string msg)
         {
             // Create the file if the file does not exist
             FileMode fileMode = FileMode.Append;
-            if (!File.Exists(m_dataFile))
+            if (!File.Exists(url))
             {
                 fileMode = FileMode.Create;
             }
 
             // Create file stream and writer
-            FileStream fs = new FileStream(m_dataFile, fileMode, FileAccess.Write);
+            FileStream fs = new FileStream(url, fileMode, FileAccess.Write);
             StreamWriter sw = new StreamWriter(fs);
 
             // Writing
@@ -87,16 +155,58 @@ namespace Gesture
             fs.Close();
         }
 
+        // ---------------------------------------------------------------------------------------------------- //
+        // ---------------------------------------------------------------------------------------------------- //
+        // ---------------------------------------------------------------------------------------------------- //
+
+        /// <summary>
+        /// Read image
+        /// </summary>
+        /// <param name="imgPath"></param>
+        /// <returns></returns>
+        public Bitmap ReadImg(string imgPath)
+        {
+            Bitmap bitmap = new Bitmap(imgPath);
+            return (bitmap);
+        }
+
         /// <summary>
         /// Write image
         /// </summary>
         /// <param name="img"></param>
-        /// <param name="name"></param>
-        public void WriteImg(Bitmap img, string name)
+        /// <param name="imgName"></param>
+        public void WriteImg(Bitmap img, string imgName)
         {
-            string url = Path.Combine(m_imageFolder, string.Format("{0}.bmp", name));
+            string url = Path.Combine(m_imageFolder, imgName);
             img.Save(url, System.Drawing.Imaging.ImageFormat.Bmp);
         }
 
+        // ---------------------------------------------------------------------------------------------------- //
+        // ---------------------------------------------------------------------------------------------------- //
+        // ---------------------------------------------------------------------------------------------------- //
+
+        public string ImgaeFolder
+        {
+            get
+            {
+                return m_imageFolder;
+            }
+        }
+
+        public string LabelFolder
+        {
+            get
+            {
+                return m_labelFolder;
+            }
+        }
+
+        public string DataFile
+        {
+            get
+            {
+                return m_dataFile;
+            }
+        }
     }
 }
