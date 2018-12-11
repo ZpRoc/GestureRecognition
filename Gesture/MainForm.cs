@@ -491,10 +491,28 @@ namespace Gesture
         /// <param name="e"></param>
         private void buttonAutoSelect_Click(object sender, EventArgs e)
         {
-            // Calculate the cnout about select items
+            // Is next batch
+            // The number of cur select items larger than CombineData, 
+            // we will remove some items and leave the latest CoverData, 
+            // then add up to CombineData. 
+            bool isNext = false;
+
+            // Calculate the count about select items
             int cntTotal = Convert.ToInt32(numericUpDownCombineData.Value);
+            int cntCover = Convert.ToInt32(numericUpDownCoverData.Value);
             int cntCur   = listBoxData.SelectedIndices.Count;
-            int cntNeed  = cntCur >= cntTotal ? cntTotal : cntTotal - cntCur;
+
+            // Calculate how many data do we need now?
+            int cntNeed  = 0;
+            if (cntCur >= cntTotal)
+            {
+                cntNeed = cntTotal - cntCover;
+                isNext  = true;
+            }
+            else
+            {
+                cntNeed = cntTotal - cntCur;
+            }
 
             // Do we have enough data lfet?
             int indexCur = listBoxData.SelectedIndices[cntCur - 1];
@@ -504,11 +522,17 @@ namespace Gesture
                 return;
             }
 
-            // Add items
-            if (cntNeed == cntTotal)
+            // if auto next batch
+            // Remove all items and add more items: it will refresh the pictureBox when add items.
+            // In order to see the whole gesture processing.
+            if (isNext)
             {
                 listBoxData.SelectedIndices.Clear();
+                indexCur = indexCur - cntCover;
+                cntNeed  = cntNeed + cntCover;
             }
+
+            // Add items
             for (int i = 0; i < cntNeed; i++)
             {
                 listBoxData.SelectedIndices.Add(++indexCur);
