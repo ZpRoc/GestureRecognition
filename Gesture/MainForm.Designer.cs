@@ -49,6 +49,11 @@
             this.toolStripStatusLabelAvgTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelMaxTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabPageLabel = new System.Windows.Forms.TabPage();
+            this.buttonOthersCnt = new System.Windows.Forms.Button();
+            this.buttonSitCnt = new System.Windows.Forms.Button();
+            this.buttonOthers = new System.Windows.Forms.Button();
+            this.buttonSit = new System.Windows.Forms.Button();
+            this.numericUpDownCoverData = new System.Windows.Forms.NumericUpDown();
             this.buttonAutoSelect = new System.Windows.Forms.Button();
             this.numericUpDownDispDelay = new System.Windows.Forms.NumericUpDown();
             this.buttonDispVedio = new System.Windows.Forms.Button();
@@ -75,8 +80,6 @@
             this.tabPageConfig = new System.Windows.Forms.TabPage();
             this.timerGrab = new System.Windows.Forms.Timer(this.components);
             this.pictureBox = new System.Windows.Forms.PictureBox();
-            this.numericUpDownCoverData = new System.Windows.Forms.NumericUpDown();
-            this.labelCoverData = new System.Windows.Forms.Label();
             this.panelControl.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPageGrab.SuspendLayout();
@@ -85,11 +88,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFPS)).BeginInit();
             this.statusStripGrab.SuspendLayout();
             this.tabPageLabel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCoverData)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDispDelay)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCombineData)).BeginInit();
             this.statusStripLabel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCoverData)).BeginInit();
             this.SuspendLayout();
             // 
             // panelControl
@@ -335,8 +338,11 @@
             // 
             // tabPageLabel
             // 
+            this.tabPageLabel.Controls.Add(this.buttonOthersCnt);
+            this.tabPageLabel.Controls.Add(this.buttonSitCnt);
+            this.tabPageLabel.Controls.Add(this.buttonOthers);
+            this.tabPageLabel.Controls.Add(this.buttonSit);
             this.tabPageLabel.Controls.Add(this.numericUpDownCoverData);
-            this.tabPageLabel.Controls.Add(this.labelCoverData);
             this.tabPageLabel.Controls.Add(this.buttonAutoSelect);
             this.tabPageLabel.Controls.Add(this.numericUpDownDispDelay);
             this.tabPageLabel.Controls.Add(this.buttonDispVedio);
@@ -365,10 +371,71 @@
             this.tabPageLabel.Text = "Label";
             this.tabPageLabel.UseVisualStyleBackColor = true;
             // 
+            // buttonOthersCnt
+            // 
+            this.buttonOthersCnt.Enabled = false;
+            this.buttonOthersCnt.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonOthersCnt.Location = new System.Drawing.Point(247, 386);
+            this.buttonOthersCnt.Name = "buttonOthersCnt";
+            this.buttonOthersCnt.Size = new System.Drawing.Size(48, 32);
+            this.buttonOthersCnt.TabIndex = 37;
+            this.buttonOthersCnt.Text = "0";
+            this.buttonOthersCnt.UseVisualStyleBackColor = true;
+            this.buttonOthersCnt.Click += new System.EventHandler(this.buttonOthersCnt_Click);
+            // 
+            // buttonSitCnt
+            // 
+            this.buttonSitCnt.Enabled = false;
+            this.buttonSitCnt.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonSitCnt.Location = new System.Drawing.Point(247, 196);
+            this.buttonSitCnt.Name = "buttonSitCnt";
+            this.buttonSitCnt.Size = new System.Drawing.Size(48, 32);
+            this.buttonSitCnt.TabIndex = 36;
+            this.buttonSitCnt.Text = "0";
+            this.buttonSitCnt.UseVisualStyleBackColor = true;
+            this.buttonSitCnt.Click += new System.EventHandler(this.buttonSitCnt_Click);
+            // 
+            // buttonOthers
+            // 
+            this.buttonOthers.Enabled = false;
+            this.buttonOthers.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonOthers.Location = new System.Drawing.Point(128, 386);
+            this.buttonOthers.Name = "buttonOthers";
+            this.buttonOthers.Size = new System.Drawing.Size(100, 32);
+            this.buttonOthers.TabIndex = 35;
+            this.buttonOthers.Text = "Others";
+            this.buttonOthers.UseVisualStyleBackColor = true;
+            this.buttonOthers.Click += new System.EventHandler(this.buttonOthers_Click);
+            // 
+            // buttonSit
+            // 
+            this.buttonSit.Enabled = false;
+            this.buttonSit.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonSit.Location = new System.Drawing.Point(128, 196);
+            this.buttonSit.Name = "buttonSit";
+            this.buttonSit.Size = new System.Drawing.Size(100, 32);
+            this.buttonSit.TabIndex = 34;
+            this.buttonSit.Text = "Sit";
+            this.buttonSit.UseVisualStyleBackColor = true;
+            this.buttonSit.Click += new System.EventHandler(this.buttonSit_Click);
+            // 
+            // numericUpDownCoverData
+            // 
+            this.numericUpDownCoverData.Location = new System.Drawing.Point(301, 48);
+            this.numericUpDownCoverData.Name = "numericUpDownCoverData";
+            this.numericUpDownCoverData.Size = new System.Drawing.Size(48, 25);
+            this.numericUpDownCoverData.TabIndex = 33;
+            this.numericUpDownCoverData.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numericUpDownCoverData.Value = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            // 
             // buttonAutoSelect
             // 
             this.buttonAutoSelect.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonAutoSelect.Location = new System.Drawing.Point(128, 158);
+            this.buttonAutoSelect.Location = new System.Drawing.Point(128, 120);
             this.buttonAutoSelect.Name = "buttonAutoSelect";
             this.buttonAutoSelect.Size = new System.Drawing.Size(64, 32);
             this.buttonAutoSelect.TabIndex = 31;
@@ -378,7 +445,7 @@
             // 
             // numericUpDownDispDelay
             // 
-            this.numericUpDownDispDelay.Location = new System.Drawing.Point(236, 162);
+            this.numericUpDownDispDelay.Location = new System.Drawing.Point(236, 124);
             this.numericUpDownDispDelay.Maximum = new decimal(new int[] {
             32,
             0,
@@ -397,7 +464,7 @@
             // buttonDispVedio
             // 
             this.buttonDispVedio.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonDispVedio.Location = new System.Drawing.Point(198, 158);
+            this.buttonDispVedio.Location = new System.Drawing.Point(198, 120);
             this.buttonDispVedio.Name = "buttonDispVedio";
             this.buttonDispVedio.Size = new System.Drawing.Size(32, 32);
             this.buttonDispVedio.TabIndex = 29;
@@ -457,7 +524,7 @@
             // 
             this.buttonStandCnt.Enabled = false;
             this.buttonStandCnt.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonStandCnt.Location = new System.Drawing.Point(247, 196);
+            this.buttonStandCnt.Location = new System.Drawing.Point(247, 158);
             this.buttonStandCnt.Name = "buttonStandCnt";
             this.buttonStandCnt.Size = new System.Drawing.Size(48, 32);
             this.buttonStandCnt.TabIndex = 24;
@@ -478,7 +545,7 @@
             // labelSelectLable
             // 
             this.labelSelectLable.AutoSize = true;
-            this.labelSelectLable.Location = new System.Drawing.Point(112, 127);
+            this.labelSelectLable.Location = new System.Drawing.Point(112, 89);
             this.labelSelectLable.Name = "labelSelectLable";
             this.labelSelectLable.Size = new System.Drawing.Size(121, 19);
             this.labelSelectLable.TabIndex = 16;
@@ -494,7 +561,7 @@
             0,
             0});
             this.numericUpDownCombineData.Name = "numericUpDownCombineData";
-            this.numericUpDownCombineData.Size = new System.Drawing.Size(64, 25);
+            this.numericUpDownCombineData.Size = new System.Drawing.Size(48, 25);
             this.numericUpDownCombineData.TabIndex = 15;
             this.numericUpDownCombineData.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.numericUpDownCombineData.Value = new decimal(new int[] {
@@ -570,7 +637,7 @@
             // 
             this.buttonStand.Enabled = false;
             this.buttonStand.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonStand.Location = new System.Drawing.Point(128, 196);
+            this.buttonStand.Location = new System.Drawing.Point(128, 158);
             this.buttonStand.Name = "buttonStand";
             this.buttonStand.Size = new System.Drawing.Size(100, 32);
             this.buttonStand.TabIndex = 9;
@@ -649,29 +716,6 @@
             this.pictureBox.TabIndex = 1;
             this.pictureBox.TabStop = false;
             // 
-            // numericUpDownCoverData
-            // 
-            this.numericUpDownCoverData.Location = new System.Drawing.Point(247, 86);
-            this.numericUpDownCoverData.Name = "numericUpDownCoverData";
-            this.numericUpDownCoverData.Size = new System.Drawing.Size(64, 25);
-            this.numericUpDownCoverData.TabIndex = 33;
-            this.numericUpDownCoverData.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDownCoverData.Value = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            // 
-            // labelCoverData
-            // 
-            this.labelCoverData.AutoSize = true;
-            this.labelCoverData.Location = new System.Drawing.Point(112, 89);
-            this.labelCoverData.Name = "labelCoverData";
-            this.labelCoverData.Size = new System.Drawing.Size(113, 19);
-            this.labelCoverData.TabIndex = 32;
-            this.labelCoverData.Text = "Cover datas: ";
-            this.labelCoverData.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
@@ -695,12 +739,12 @@
             this.statusStripGrab.PerformLayout();
             this.tabPageLabel.ResumeLayout(false);
             this.tabPageLabel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCoverData)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDispDelay)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCombineData)).EndInit();
             this.statusStripLabel.ResumeLayout(false);
             this.statusStripLabel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCoverData)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -754,7 +798,10 @@
         private System.Windows.Forms.NumericUpDown numericUpDownDispDelay;
         private System.Windows.Forms.Button buttonAutoSelect;
         private System.Windows.Forms.NumericUpDown numericUpDownCoverData;
-        private System.Windows.Forms.Label labelCoverData;
+        private System.Windows.Forms.Button buttonOthersCnt;
+        private System.Windows.Forms.Button buttonSitCnt;
+        private System.Windows.Forms.Button buttonOthers;
+        private System.Windows.Forms.Button buttonSit;
     }
 }
 
