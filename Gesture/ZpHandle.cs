@@ -119,10 +119,10 @@ namespace Gesture
             // Create a sample
             string dataStr = string.Empty;
             string imgStr  = string.Empty;
-            for (int i = 0; i < listBox.SelectedItems.Count; i++)
+            foreach (var selectedItem in listBox.SelectedItems)
             {
                 // Make sure all the datas are valid
-                string[] itemSplit = listBox.SelectedItems[i].ToString().Split(' ');
+                string[] itemSplit = selectedItem.ToString().Split(' ');
                 if (string.IsNullOrWhiteSpace(itemSplit[itemSplit.Length - 1]))
                 {
                     MessageBox.Show("Have empty data in the select datas. ");

@@ -399,10 +399,12 @@ namespace Gesture
 
                 // Enable the open folder button
                 buttonStandCnt.Enabled    = true;
+                buttonSitCnt.Enabled      = true;
                 buttonWalkingCnt.Enabled  = true;
                 buttonStandUpCnt.Enabled  = true;
                 buttonSitDownCnt.Enabled  = true;
                 buttonTurnBackCnt.Enabled = true;
+                buttonOthersCnt.Enabled   = true;
             }
             else
             {
@@ -495,10 +497,23 @@ namespace Gesture
         /// <param name="e"></param>
         private void buttonAutoSelect_Click(object sender, EventArgs e)
         {
-            // Must have the first index
+            // listBoxData must have the first selected index
             if (listBoxData.SelectedIndices.Count == 0)
             {
+                MessageBox.Show("Please select some datas first. ");
                 return;
+            }
+
+            // All of the listBoxData.SelectedItems must be valid
+            foreach (var selectedItem in listBoxData.SelectedItems)
+            {
+                string[] itemSplit = selectedItem.ToString().Split(' ');
+                string itemFlag = itemSplit[itemSplit.Length - 1];
+                if (string.IsNullOrWhiteSpace(itemFlag))
+                {
+                    MessageBox.Show("The selected datas are not valid. ");
+                    return;
+                }
             }
 
             // Is next batch
@@ -524,13 +539,8 @@ namespace Gesture
                 cntNeed = cntTotal - cntCur;
             }
 
-            // Do we have enough data lfet?
+            // Calculate the cur index
             int indexCur = listBoxData.SelectedIndices[cntCur - 1];
-            if (listBoxData.Items.Count - indexCur - 1 < cntNeed)
-            {
-                MessageBox.Show("Do not have enough datas. ");
-                return;
-            }
 
             // if auto next batch
             // Remove all items and add more items: it will refresh the pictureBox when add items.
@@ -542,10 +552,31 @@ namespace Gesture
                 cntNeed  = cntNeed + cntCover;
             }
 
-            // Add items
-            for (int i = 0; i < cntNeed; i++)
+            // Add items: start at indexCur, add cntNeed items
+            for (int i = 0; i < cntNeed; )
             {
-                listBoxData.SelectedIndices.Add(++indexCur);
+                // Next items
+                indexCur++;
+
+                // Make sure have enough items. 
+                if (indexCur >= listBoxData.Items.Count)
+                {
+                    MessageBox.Show("Do not have enough items. ");
+                    return;
+                }
+
+                // Make sure the items is valid
+                string[] itemSplit = listBoxData.Items[indexCur].ToString().Split(' ');
+                string itemFlag = itemSplit[itemSplit.Length - 1];
+                if (string.IsNullOrWhiteSpace(itemFlag))
+                {
+                    continue;
+                }
+                else
+                {
+                    i++;
+                    listBoxData.SelectedIndices.Add(indexCur);
+                }
             }
         }
 

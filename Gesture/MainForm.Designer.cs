@@ -582,13 +582,14 @@
             // 
             // listBoxData
             // 
+            this.listBoxData.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 8F);
             this.listBoxData.FormattingEnabled = true;
-            this.listBoxData.ItemHeight = 17;
+            this.listBoxData.ItemHeight = 15;
             this.listBoxData.Location = new System.Drawing.Point(6, 6);
             this.listBoxData.Name = "listBoxData";
             this.listBoxData.ScrollAlwaysVisible = true;
             this.listBoxData.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxData.Size = new System.Drawing.Size(100, 412);
+            this.listBoxData.Size = new System.Drawing.Size(100, 409);
             this.listBoxData.TabIndex = 13;
             this.listBoxData.SelectedIndexChanged += new System.EventHandler(this.listBoxData_SelectedIndexChanged);
             // 
