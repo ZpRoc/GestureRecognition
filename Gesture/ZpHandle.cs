@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -147,16 +148,81 @@ namespace Gesture
             fileHandle.WriteMsg(Path.Combine(fileHandle.LabelFolder, labelname, mdName) , imgStr);
         }
 
+        // ---------- Disp label Count
+
         /// <summary>
         /// Disp label data count
         /// </summary>
         /// <param name="folder"></param>
         /// <param name="labelname"></param>
         /// <param name="button"></param>
-        public void DispLabelDataCnt(string folder, string labelname, ref Button button)
+        public void DispLabelDataCnt(string folder, string labelname, ref Button button, ref NumericUpDown numericUpDown)
         {
-            int fileCnt = Directory.GetFiles(Path.Combine(folder, labelname)).Length;
-            button.Text = ((int)(fileCnt / 2)).ToString("");
+            // Define the variables to store txt file url and md file url
+            List<List<string>> fileUrls = new List<List<string>>();
+
+            // Get all the file url
+            string[] getFiles = Directory.GetFiles(Path.Combine(folder, labelname));
+
+            // Assign
+            for (int i = 0; i < getFiles.Length; i += 2)
+            {
+                List<string> fileUrl = new List<string> { getFiles[i+1], getFiles[i] };
+                fileUrls.Add(fileUrl);
+            }
+            numericUpDown.Tag = fileUrls;
+            numericUpDown.Enabled = fileUrls.Count > 0;
+            numericUpDown.Maximum = fileUrls.Count;
+
+            // Disp
+            button.Text = fileUrls.Count.ToString();
+        }
+
+        /// <summary>
+        /// Disp sample
+        /// </summary>
+        /// <param name="numericUpDown"></param>
+        /// <param name="pictureBox"></param>
+        public void DispSample(NumericUpDown numericUpDown, int dispDelay, ref PictureBox pictureBox)
+        {
+            // Get md file
+            List<List<string>> fileUrls = (List<List<string>>)numericUpDown.Tag;
+            string mdFile = fileUrls[Convert.ToInt32(numericUpDown.Value) - 1][1];
+
+            // Read md file
+            string[] readLines;
+            if (File.Exists(mdFile))
+            {
+                readLines = File.ReadAllLines(mdFile);
+            }
+            else
+            {
+                MessageBox.Show("Cannot find the markdown file. ");
+                return;
+            }
+
+            // Disp
+            foreach (string line in readLines)
+            {
+                // Continue if line is empty
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+
+                // Read bitmap
+                string[] lineSplit = line.Split('(');
+                string imgUrl = lineSplit[1].Split(')')[0];
+                Bitmap bitmap  = new Bitmap(imgUrl);
+
+                // Draw the image
+                pictureBox.Image = bitmap;
+                pictureBox.Refresh();
+
+                // Delay
+                System.Threading.Thread.Sleep(dispDelay);
+            }
+
         }
     }
 }

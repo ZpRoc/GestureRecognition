@@ -32,7 +32,7 @@ namespace Gesture
         private IssuesData      _issuesData = null;
 
         // Labels
-        static readonly string[] m_LABELNAMES = {"Stand", "Sit", "Walking", "StandUp", "SitDown", "TurnBack", "Others"};
+        static readonly string[] m_LABELNAMES = {"Standing", "Sitting", "Walking", "StandUp", "SitDown", "TurnBack", "Others"};
 
         // Global flag
         bool m_IS_GRAB       = false;       // Grab the images?
@@ -391,20 +391,13 @@ namespace Gesture
                 m_fileHandle.SetFolder(dataFolder);
 
                 // Disp label count
-                m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[0], ref buttonStandCnt);
-                m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[1], ref buttonWalkingCnt);
-                m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[2], ref buttonStandUpCnt);
-                m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[3], ref buttonSitDownCnt);
-                m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[4], ref buttonTurnBackCnt);
-
-                // Enable the open folder button
-                buttonStandCnt.Enabled    = true;
-                buttonSitCnt.Enabled      = true;
-                buttonWalkingCnt.Enabled  = true;
-                buttonStandUpCnt.Enabled  = true;
-                buttonSitDownCnt.Enabled  = true;
-                buttonTurnBackCnt.Enabled = true;
-                buttonOthersCnt.Enabled   = true;
+                m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[0], ref buttonStandingCnt, ref numericUpDownStanding);
+                m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[1], ref buttonSittingCnt,  ref numericUpDownSitting);
+                m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[2], ref buttonWalkingCnt,  ref numericUpDownWalking);
+                m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[3], ref buttonStandUpCnt,  ref numericUpDownStandUp);
+                m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[4], ref buttonSitDownCnt,  ref numericUpDownSitDown);
+                m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[5], ref buttonTurnBackCnt, ref numericUpDownTurnBack);
+                m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[6], ref buttonOthersCnt,   ref numericUpDownOthers);
             }
             else
             {
@@ -440,29 +433,6 @@ namespace Gesture
                 // Draw the image
                 pictureBox.Image = bitmap;
                 pictureBox.Refresh();
-            }
-
-            // Enable the button
-            // The number of select data must be equal numericUpDownCombineData.value
-            if (listBoxData.SelectedItems.Count == numericUpDownCombineData.Value)
-            {
-                buttonStand.Enabled    = true;
-                buttonSit.Enabled      = true; 
-                buttonWalking.Enabled  = true;
-                buttonStandUp.Enabled  = true;
-                buttonSitDown.Enabled  = true;
-                buttonTurnBack.Enabled = true;
-                buttonOthers.Enabled   = true;
-            }
-            else
-            {
-                buttonStand.Enabled    = false;
-                buttonSit.Enabled      = false; 
-                buttonWalking.Enabled  = false;
-                buttonStandUp.Enabled  = false;
-                buttonSitDown.Enabled  = false;
-                buttonTurnBack.Enabled = false;
-                buttonOthers.Enabled   = false;
             }
         }
 
@@ -580,19 +550,26 @@ namespace Gesture
             }
         }
 
+        // ---------- Write label data
+
         /// <summary>
         /// Write Stand label data
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonStand_Click(object sender, EventArgs e)
+        private void buttonStanding_Click(object sender, EventArgs e)
         {
             try
             {
                 if (listBoxData.SelectedItems.Count == numericUpDownCombineData.Value)
                 {
                     m_zpHandle.WriteLabelData(m_skeletonDataLines, listBoxData, m_fileHandle, m_LABELNAMES[0]);
-                    m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[0], ref buttonStand);
+                    m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[0], ref buttonStandingCnt, ref numericUpDownStanding);
+                }
+                else
+                {
+                    MessageBox.Show("The number of selected datas is invalid. ");
+                    return;
                 }
             }
             catch (System.Exception exception)
@@ -601,16 +578,6 @@ namespace Gesture
                 MessageBox.Show(output);
 				Trace.WriteLine(output);
                 return;
-            }
-            finally
-            {
-                buttonStand.Enabled    = false;
-                buttonSit.Enabled      = false; 
-                buttonWalking.Enabled  = false;
-                buttonStandUp.Enabled  = false;
-                buttonSitDown.Enabled  = false;
-                buttonTurnBack.Enabled = false;
-                buttonOthers.Enabled   = false;
             }
         }
 
@@ -619,14 +586,19 @@ namespace Gesture
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonSit_Click(object sender, EventArgs e)
+        private void buttonSitting_Click(object sender, EventArgs e)
         {
             try
             {
                 if (listBoxData.SelectedItems.Count == numericUpDownCombineData.Value)
                 {
                     m_zpHandle.WriteLabelData(m_skeletonDataLines, listBoxData, m_fileHandle, m_LABELNAMES[1]);
-                    m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[1], ref buttonSit);
+                    m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[1], ref buttonSittingCnt, ref numericUpDownSitting);
+                }
+                else
+                {
+                    MessageBox.Show("The number of selected datas is invalid. ");
+                    return;
                 }
             }
             catch (System.Exception exception)
@@ -635,16 +607,6 @@ namespace Gesture
                 MessageBox.Show(output);
 				Trace.WriteLine(output);
                 return;
-            }
-            finally
-            {
-                buttonStand.Enabled    = false;
-                buttonSit.Enabled      = false; 
-                buttonWalking.Enabled  = false;
-                buttonStandUp.Enabled  = false;
-                buttonSitDown.Enabled  = false;
-                buttonTurnBack.Enabled = false;
-                buttonOthers.Enabled   = false;
             }
         }
 
@@ -660,7 +622,12 @@ namespace Gesture
                 if (listBoxData.SelectedItems.Count == numericUpDownCombineData.Value)
                 {
                     m_zpHandle.WriteLabelData(m_skeletonDataLines, listBoxData, m_fileHandle, m_LABELNAMES[2]);
-                    m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[2], ref buttonWalkingCnt);
+                    m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[2], ref buttonWalkingCnt, ref numericUpDownWalking);
+                }
+                else
+                {
+                    MessageBox.Show("The number of selected datas is invalid. ");
+                    return;
                 }
             }
             catch (System.Exception exception)
@@ -669,16 +636,6 @@ namespace Gesture
                 MessageBox.Show(output);
 				Trace.WriteLine(output);
                 return;
-            }
-            finally
-            {
-                buttonStand.Enabled    = false;
-                buttonSit.Enabled      = false; 
-                buttonWalking.Enabled  = false;
-                buttonStandUp.Enabled  = false;
-                buttonSitDown.Enabled  = false;
-                buttonTurnBack.Enabled = false;
-                buttonOthers.Enabled   = false;
             }
         }
 
@@ -694,7 +651,12 @@ namespace Gesture
                 if (listBoxData.SelectedItems.Count == numericUpDownCombineData.Value)
                 {
                     m_zpHandle.WriteLabelData(m_skeletonDataLines, listBoxData, m_fileHandle, m_LABELNAMES[3]);
-                    m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[3], ref buttonStandUpCnt);
+                    m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[3], ref buttonStandUpCnt, ref numericUpDownStandUp);
+                }
+                else
+                {
+                    MessageBox.Show("The number of selected datas is invalid. ");
+                    return;
                 }
             }
             catch (System.Exception exception)
@@ -703,16 +665,6 @@ namespace Gesture
                 MessageBox.Show(output);
 				Trace.WriteLine(output);
                 return;
-            }
-            finally
-            {
-                buttonStand.Enabled    = false;
-                buttonSit.Enabled      = false; 
-                buttonWalking.Enabled  = false;
-                buttonStandUp.Enabled  = false;
-                buttonSitDown.Enabled  = false;
-                buttonTurnBack.Enabled = false;
-                buttonOthers.Enabled   = false;
             }
         }
 
@@ -728,7 +680,12 @@ namespace Gesture
                 if (listBoxData.SelectedItems.Count == numericUpDownCombineData.Value)
                 {
                     m_zpHandle.WriteLabelData(m_skeletonDataLines, listBoxData, m_fileHandle, m_LABELNAMES[4]);
-                    m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[4], ref buttonSitDownCnt);
+                    m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[4], ref buttonSitDownCnt, ref numericUpDownSitDown);
+                }
+                else
+                {
+                    MessageBox.Show("The number of selected datas is invalid. ");
+                    return;
                 }
             }
             catch (System.Exception exception)
@@ -737,16 +694,6 @@ namespace Gesture
                 MessageBox.Show(output);
 				Trace.WriteLine(output);
                 return;
-            }
-            finally
-            {
-                buttonStand.Enabled    = false;
-                buttonSit.Enabled      = false; 
-                buttonWalking.Enabled  = false;
-                buttonStandUp.Enabled  = false;
-                buttonSitDown.Enabled  = false;
-                buttonTurnBack.Enabled = false;
-                buttonOthers.Enabled   = false;
             }
         }
 
@@ -762,7 +709,12 @@ namespace Gesture
                 if (listBoxData.SelectedItems.Count == numericUpDownCombineData.Value)
                 {
                     m_zpHandle.WriteLabelData(m_skeletonDataLines, listBoxData, m_fileHandle, m_LABELNAMES[5]);
-                    m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[5], ref buttonTurnBackCnt);
+                    m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[5], ref buttonTurnBackCnt, ref numericUpDownTurnBack);
+                }
+                else
+                {
+                    MessageBox.Show("The number of selected datas is invalid. ");
+                    return;
                 }
             }
             catch (System.Exception exception)
@@ -771,16 +723,6 @@ namespace Gesture
                 MessageBox.Show(output);
 				Trace.WriteLine(output);
                 return;
-            }
-            finally
-            {
-                buttonStand.Enabled    = false;
-                buttonSit.Enabled      = false; 
-                buttonWalking.Enabled  = false;
-                buttonStandUp.Enabled  = false;
-                buttonSitDown.Enabled  = false;
-                buttonTurnBack.Enabled = false;
-                buttonOthers.Enabled   = false;
             }
         }
 
@@ -796,7 +738,12 @@ namespace Gesture
                 if (listBoxData.SelectedItems.Count == numericUpDownCombineData.Value)
                 {
                     m_zpHandle.WriteLabelData(m_skeletonDataLines, listBoxData, m_fileHandle, m_LABELNAMES[6]);
-                    m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[6], ref buttonOthers);
+                    m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[6], ref buttonOthersCnt, ref numericUpDownOthers);
+                }
+                else
+                {
+                    MessageBox.Show("The number of selected datas is invalid. ");
+                    return;
                 }
             }
             catch (System.Exception exception)
@@ -806,27 +753,22 @@ namespace Gesture
 				Trace.WriteLine(output);
                 return;
             }
-            finally
-            {
-                buttonStand.Enabled    = false;
-                buttonSit.Enabled      = false; 
-                buttonWalking.Enabled  = false;
-                buttonStandUp.Enabled  = false;
-                buttonSitDown.Enabled  = false;
-                buttonTurnBack.Enabled = false;
-                buttonOthers.Enabled   = false;
-            }
         }
+
+        // ---------- Open label folder
 
         /// <summary>
         /// Open Stand label folder
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonStandCnt_Click(object sender, EventArgs e)
+        private void buttonStandingCnt_Click(object sender, EventArgs e)
         {
             string folderUrl = Path.Combine(m_fileHandle.LabelFolder, m_LABELNAMES[0]);
-            System.Diagnostics.Process.Start(folderUrl);
+            if (Directory.Exists(folderUrl))
+            {
+                 System.Diagnostics.Process.Start(folderUrl);
+            }
         }
 
         /// <summary>
@@ -834,10 +776,13 @@ namespace Gesture
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonSitCnt_Click(object sender, EventArgs e)
+        private void buttonSittingCnt_Click(object sender, EventArgs e)
         {
             string folderUrl = Path.Combine(m_fileHandle.LabelFolder, m_LABELNAMES[1]);
-            System.Diagnostics.Process.Start(folderUrl);
+            if (Directory.Exists(folderUrl))
+            {
+                 System.Diagnostics.Process.Start(folderUrl);
+            }
         }
 
         /// <summary>
@@ -848,7 +793,10 @@ namespace Gesture
         private void buttonWalkingCnt_Click(object sender, EventArgs e)
         {
             string folderUrl = Path.Combine(m_fileHandle.LabelFolder, m_LABELNAMES[2]);
-            System.Diagnostics.Process.Start(folderUrl);
+            if (Directory.Exists(folderUrl))
+            {
+                 System.Diagnostics.Process.Start(folderUrl);
+            }
         }
 
         /// <summary>
@@ -859,7 +807,10 @@ namespace Gesture
         private void buttonStandUpCnt_Click(object sender, EventArgs e)
         {
             string folderUrl = Path.Combine(m_fileHandle.LabelFolder, m_LABELNAMES[3]);
-            System.Diagnostics.Process.Start(folderUrl);
+            if (Directory.Exists(folderUrl))
+            {
+                 System.Diagnostics.Process.Start(folderUrl);
+            }
         }
 
         /// <summary>
@@ -870,7 +821,10 @@ namespace Gesture
         private void buttonSitDownCnt_Click(object sender, EventArgs e)
         {
             string folderUrl = Path.Combine(m_fileHandle.LabelFolder, m_LABELNAMES[4]);
-            System.Diagnostics.Process.Start(folderUrl);
+            if (Directory.Exists(folderUrl))
+            {
+                 System.Diagnostics.Process.Start(folderUrl);
+            }
         }
 
         /// <summary>
@@ -881,7 +835,10 @@ namespace Gesture
         private void buttonTurnbackCnt_Click(object sender, EventArgs e)
         {
             string folderUrl = Path.Combine(m_fileHandle.LabelFolder, m_LABELNAMES[5]);
-            System.Diagnostics.Process.Start(folderUrl);
+            if (Directory.Exists(folderUrl))
+            {
+                 System.Diagnostics.Process.Start(folderUrl);
+            }
         }
 
         /// <summary>
@@ -892,7 +849,82 @@ namespace Gesture
         private void buttonOthersCnt_Click(object sender, EventArgs e)
         {
             string folderUrl = Path.Combine(m_fileHandle.LabelFolder, m_LABELNAMES[6]);
-            System.Diagnostics.Process.Start(folderUrl);
+            if (Directory.Exists(folderUrl))
+            {
+                 System.Diagnostics.Process.Start(folderUrl);
+            }
+        }
+
+        // ---------- Disp label sample
+
+        /// <summary>
+        /// Disp Stand sample
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void numericUpDownStanding_ValueChanged(object sender, EventArgs e)
+        {
+            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), ref pictureBox);
+        }
+
+        /// <summary>
+        /// Disp Sit sample
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void numericUpDownSitting_ValueChanged(object sender, EventArgs e)
+        {
+            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), ref pictureBox);
+        }
+
+        /// <summary>
+        /// Disp Walking sample
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void numericUpDownWalking_ValueChanged(object sender, EventArgs e)
+        {
+            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), ref pictureBox);
+        }
+
+        /// <summary>
+        /// Disp StandUp sample
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void numericUpDownStandUp_ValueChanged(object sender, EventArgs e)
+        {
+            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), ref pictureBox);
+        }
+
+        /// <summary>
+        /// Disp SitDown sample
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void numericUpDownSitDown_ValueChanged(object sender, EventArgs e)
+        {
+            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), ref pictureBox);
+        }
+
+        /// <summary>
+        /// Disp TurnBack sample
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void numericUpDownTurnBack_ValueChanged(object sender, EventArgs e)
+        {
+            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), ref pictureBox);
+        }
+
+        /// <summary>
+        /// Disp Others sample
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void numericUpDownOthers_ValueChanged(object sender, EventArgs e)
+        {
+            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), ref pictureBox);
         }
 
         // ---------------------------------------------------------------------------------------------------- //
