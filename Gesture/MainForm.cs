@@ -358,6 +358,96 @@ namespace Gesture
             }
         }
 
+        /// <summary>
+        /// Delete useless images
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            // Selete a data file
+            string dataFile = string.Empty;
+            OpenFileDialog openFileDialog   = new OpenFileDialog();
+            openFileDialog.InitialDirectory = Path.Combine(Application.StartupPath, "Output");
+            openFileDialog.RestoreDirectory = true;
+            openFileDialog.Title            = "Please select the data file. ";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                dataFile = openFileDialog.FileName;
+            }
+            else
+            {
+                return;
+            }
+
+            // Set the m_fileHandle
+            string dataFolder = Path.GetDirectoryName(dataFile);
+            DialogResult result = MessageBox.Show(string.Format("Are you sure to delete the unused images in the folder: \n{0}?", dataFolder), 
+                                                  "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (result == DialogResult.Yes)
+            {
+                // Get all the useful images
+                List<string> imgUrlsList = new List<string>();
+                string labelFolder = Path.Combine(dataFolder, m_fileHandle.LABEL_FOLDER_NAME);
+                foreach (string labelname in m_LABELNAMES)
+                {
+                    // Every label folder
+                    string mdFolder = Path.Combine(labelFolder, labelname);
+                    string[] mdUrls = Directory.GetFiles(mdFolder);
+                    foreach (string mdUrl in mdUrls)
+                    {
+                        // Continue if not markdown file
+                        if (Path.GetExtension(mdUrl) != ".md")
+                        {
+                            continue;
+                        }
+
+                        // Read md file
+                        string[] lines = File.ReadAllLines(mdUrl);
+                        foreach (string line in lines)
+                        {
+                            // Continue if line is empty
+                            if (string.IsNullOrWhiteSpace(line))
+                            {
+                                continue;
+                            }
+
+                            // Get the img url
+                            string[] lineSplit = line.Split('(');
+                            string imgUrl = lineSplit[1].Split(')')[0];
+
+                            // Add 
+                            if (string.IsNullOrWhiteSpace(imgUrlsList.Find(zp => zp == imgUrl)))
+                            {
+                                imgUrlsList.Add(imgUrl);
+                            }
+                        }
+                    }
+                }
+
+                // Delete the unused images
+                string imgFolder = Path.Combine(dataFolder, m_fileHandle.IMAGE_FOLDER_NAME);
+                string[] imgUrls = Directory.GetFiles(imgFolder);
+                foreach (string imgUrl in imgUrls)
+                {
+                    // add image string: ..\..\..\DataFloder\ImagesFolder\ImageName
+                    string[] imgUrlSplit = imgUrl.Split(Path.DirectorySeparatorChar);
+                    string imgPath = Path.Combine("..", "..", "..", imgUrlSplit[imgUrlSplit.Length - 3], imgUrlSplit[imgUrlSplit.Length - 2], imgUrlSplit[imgUrlSplit.Length - 1]);
+                    if (string.IsNullOrWhiteSpace(imgUrlsList.Find(zp => zp == imgPath)))
+                    {
+                        File.Delete(imgUrl);
+                    }
+                }
+            }
+            else
+            {
+                return;
+            }
+
+            // Unused images have been deleted.
+            MessageBox.Show("Unused images have been deleted. ");
+        }
+
         // ---------------------------------------------------------------------------------------------------- //
         // ------------------------------- Important form control events: Label ------------------------------- //
         // ---------------------------------------------------------------------------------------------------- //
@@ -388,6 +478,7 @@ namespace Gesture
             string dataFolder = Path.GetDirectoryName(dataFile);
             if (m_fileHandle.IsValidFolder(dataFolder))
             {
+                // Set folder
                 m_fileHandle.SetFolder(dataFolder);
 
                 // Disp label count
@@ -398,6 +489,10 @@ namespace Gesture
                 m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[4], ref buttonSitDownCnt,  ref numericUpDownSitDown);
                 m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[5], ref buttonTurnBackCnt, ref numericUpDownTurnBack);
                 m_zpHandle.DispLabelDataCnt(m_fileHandle.LabelFolder, m_LABELNAMES[6], ref buttonOthersCnt,   ref numericUpDownOthers);
+
+                // Disp Folder
+                string[] dataFolderSplit = dataFolder.Split(Path.DirectorySeparatorChar);
+                toolStripStatusLabelFolder.Text = "URL: " + dataFolderSplit[dataFolderSplit.Length - 1];
             }
             else
             {
@@ -864,7 +959,7 @@ namespace Gesture
         /// <param name="e"></param>
         private void numericUpDownStanding_ValueChanged(object sender, EventArgs e)
         {
-            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), ref pictureBox);
+            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), m_fileHandle, ref pictureBox);
         }
 
         /// <summary>
@@ -874,7 +969,7 @@ namespace Gesture
         /// <param name="e"></param>
         private void numericUpDownSitting_ValueChanged(object sender, EventArgs e)
         {
-            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), ref pictureBox);
+            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), m_fileHandle, ref pictureBox);
         }
 
         /// <summary>
@@ -884,7 +979,7 @@ namespace Gesture
         /// <param name="e"></param>
         private void numericUpDownWalking_ValueChanged(object sender, EventArgs e)
         {
-            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), ref pictureBox);
+            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), m_fileHandle, ref pictureBox);
         }
 
         /// <summary>
@@ -894,7 +989,7 @@ namespace Gesture
         /// <param name="e"></param>
         private void numericUpDownStandUp_ValueChanged(object sender, EventArgs e)
         {
-            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), ref pictureBox);
+            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), m_fileHandle, ref pictureBox);
         }
 
         /// <summary>
@@ -904,7 +999,7 @@ namespace Gesture
         /// <param name="e"></param>
         private void numericUpDownSitDown_ValueChanged(object sender, EventArgs e)
         {
-            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), ref pictureBox);
+            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), m_fileHandle, ref pictureBox);
         }
 
         /// <summary>
@@ -914,7 +1009,7 @@ namespace Gesture
         /// <param name="e"></param>
         private void numericUpDownTurnBack_ValueChanged(object sender, EventArgs e)
         {
-            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), ref pictureBox);
+            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), m_fileHandle, ref pictureBox);
         }
 
         /// <summary>
@@ -924,7 +1019,7 @@ namespace Gesture
         /// <param name="e"></param>
         private void numericUpDownOthers_ValueChanged(object sender, EventArgs e)
         {
-            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), ref pictureBox);
+            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), m_fileHandle, ref pictureBox);
         }
 
         // ---------------------------------------------------------------------------------------------------- //

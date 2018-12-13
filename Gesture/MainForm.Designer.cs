@@ -86,6 +86,8 @@
             this.buttonWalking = new System.Windows.Forms.Button();
             this.timerGrab = new System.Windows.Forms.Timer(this.components);
             this.pictureBox = new System.Windows.Forms.PictureBox();
+            this.buttonDelete = new System.Windows.Forms.Button();
+            this.toolStripStatusLabelFolder = new System.Windows.Forms.ToolStripStatusLabel();
             this.panelControl.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPageGrab.SuspendLayout();
@@ -350,6 +352,7 @@
             // 
             // tabPageLabel
             // 
+            this.tabPageLabel.Controls.Add(this.buttonDelete);
             this.tabPageLabel.Controls.Add(this.numericUpDownOthers);
             this.tabPageLabel.Controls.Add(this.numericUpDownTurnBack);
             this.tabPageLabel.Controls.Add(this.numericUpDownSitDown);
@@ -395,12 +398,7 @@
             this.numericUpDownOthers.Enabled = false;
             this.numericUpDownOthers.Location = new System.Drawing.Point(288, 390);
             this.numericUpDownOthers.Maximum = new decimal(new int[] {
-            1,
             0,
-            0,
-            0});
-            this.numericUpDownOthers.Minimum = new decimal(new int[] {
-            1,
             0,
             0,
             0});
@@ -408,11 +406,6 @@
             this.numericUpDownOthers.Size = new System.Drawing.Size(48, 25);
             this.numericUpDownOthers.TabIndex = 44;
             this.numericUpDownOthers.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDownOthers.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.numericUpDownOthers.ValueChanged += new System.EventHandler(this.numericUpDownOthers_ValueChanged);
             // 
             // numericUpDownTurnBack
@@ -420,12 +413,7 @@
             this.numericUpDownTurnBack.Enabled = false;
             this.numericUpDownTurnBack.Location = new System.Drawing.Point(288, 352);
             this.numericUpDownTurnBack.Maximum = new decimal(new int[] {
-            1,
             0,
-            0,
-            0});
-            this.numericUpDownTurnBack.Minimum = new decimal(new int[] {
-            1,
             0,
             0,
             0});
@@ -433,11 +421,6 @@
             this.numericUpDownTurnBack.Size = new System.Drawing.Size(48, 25);
             this.numericUpDownTurnBack.TabIndex = 43;
             this.numericUpDownTurnBack.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDownTurnBack.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.numericUpDownTurnBack.ValueChanged += new System.EventHandler(this.numericUpDownTurnBack_ValueChanged);
             // 
             // numericUpDownSitDown
@@ -445,12 +428,7 @@
             this.numericUpDownSitDown.Enabled = false;
             this.numericUpDownSitDown.Location = new System.Drawing.Point(288, 314);
             this.numericUpDownSitDown.Maximum = new decimal(new int[] {
-            1,
             0,
-            0,
-            0});
-            this.numericUpDownSitDown.Minimum = new decimal(new int[] {
-            1,
             0,
             0,
             0});
@@ -458,11 +436,6 @@
             this.numericUpDownSitDown.Size = new System.Drawing.Size(48, 25);
             this.numericUpDownSitDown.TabIndex = 42;
             this.numericUpDownSitDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDownSitDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.numericUpDownSitDown.ValueChanged += new System.EventHandler(this.numericUpDownSitDown_ValueChanged);
             // 
             // numericUpDownStandUp
@@ -470,12 +443,7 @@
             this.numericUpDownStandUp.Enabled = false;
             this.numericUpDownStandUp.Location = new System.Drawing.Point(288, 276);
             this.numericUpDownStandUp.Maximum = new decimal(new int[] {
-            1,
             0,
-            0,
-            0});
-            this.numericUpDownStandUp.Minimum = new decimal(new int[] {
-            1,
             0,
             0,
             0});
@@ -483,11 +451,6 @@
             this.numericUpDownStandUp.Size = new System.Drawing.Size(48, 25);
             this.numericUpDownStandUp.TabIndex = 41;
             this.numericUpDownStandUp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDownStandUp.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.numericUpDownStandUp.ValueChanged += new System.EventHandler(this.numericUpDownStandUp_ValueChanged);
             // 
             // numericUpDownWalking
@@ -495,12 +458,7 @@
             this.numericUpDownWalking.Enabled = false;
             this.numericUpDownWalking.Location = new System.Drawing.Point(288, 238);
             this.numericUpDownWalking.Maximum = new decimal(new int[] {
-            1,
             0,
-            0,
-            0});
-            this.numericUpDownWalking.Minimum = new decimal(new int[] {
-            1,
             0,
             0,
             0});
@@ -508,11 +466,6 @@
             this.numericUpDownWalking.Size = new System.Drawing.Size(48, 25);
             this.numericUpDownWalking.TabIndex = 40;
             this.numericUpDownWalking.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDownWalking.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.numericUpDownWalking.ValueChanged += new System.EventHandler(this.numericUpDownWalking_ValueChanged);
             // 
             // numericUpDownSitting
@@ -520,12 +473,7 @@
             this.numericUpDownSitting.Enabled = false;
             this.numericUpDownSitting.Location = new System.Drawing.Point(288, 200);
             this.numericUpDownSitting.Maximum = new decimal(new int[] {
-            1,
             0,
-            0,
-            0});
-            this.numericUpDownSitting.Minimum = new decimal(new int[] {
-            1,
             0,
             0,
             0});
@@ -533,11 +481,6 @@
             this.numericUpDownSitting.Size = new System.Drawing.Size(48, 25);
             this.numericUpDownSitting.TabIndex = 39;
             this.numericUpDownSitting.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDownSitting.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.numericUpDownSitting.ValueChanged += new System.EventHandler(this.numericUpDownSitting_ValueChanged);
             // 
             // numericUpDownStanding
@@ -545,12 +488,7 @@
             this.numericUpDownStanding.Enabled = false;
             this.numericUpDownStanding.Location = new System.Drawing.Point(288, 162);
             this.numericUpDownStanding.Maximum = new decimal(new int[] {
-            1,
             0,
-            0,
-            0});
-            this.numericUpDownStanding.Minimum = new decimal(new int[] {
-            1,
             0,
             0,
             0});
@@ -558,11 +496,6 @@
             this.numericUpDownStanding.Size = new System.Drawing.Size(48, 25);
             this.numericUpDownStanding.TabIndex = 38;
             this.numericUpDownStanding.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDownStanding.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.numericUpDownStanding.ValueChanged += new System.EventHandler(this.numericUpDownStanding_ValueChanged);
             // 
             // buttonOthersCnt
@@ -646,7 +579,7 @@
             this.numericUpDownDispDelay.TabIndex = 30;
             this.numericUpDownDispDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.numericUpDownDispDelay.Value = new decimal(new int[] {
-            5,
+            16,
             0,
             0,
             0});
@@ -783,7 +716,8 @@
             this.statusStripLabel.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabelSelectData,
             this.toolStripStatusLabelSeparator,
-            this.toolStripStatusLabelAllData});
+            this.toolStripStatusLabelAllData,
+            this.toolStripStatusLabelFolder});
             this.statusStripLabel.Location = new System.Drawing.Point(3, 425);
             this.statusStripLabel.Name = "statusStripLabel";
             this.statusStripLabel.Size = new System.Drawing.Size(354, 22);
@@ -888,6 +822,24 @@
             this.pictureBox.TabIndex = 1;
             this.pictureBox.TabStop = false;
             // 
+            // buttonDelete
+            // 
+            this.buttonDelete.BackColor = System.Drawing.Color.Red;
+            this.buttonDelete.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonDelete.Location = new System.Drawing.Point(290, 120);
+            this.buttonDelete.Name = "buttonDelete";
+            this.buttonDelete.Size = new System.Drawing.Size(48, 32);
+            this.buttonDelete.TabIndex = 45;
+            this.buttonDelete.Text = "Dlt";
+            this.buttonDelete.UseVisualStyleBackColor = false;
+            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            // 
+            // toolStripStatusLabelFolder
+            // 
+            this.toolStripStatusLabelFolder.Name = "toolStripStatusLabelFolder";
+            this.toolStripStatusLabelFolder.Size = new System.Drawing.Size(38, 17);
+            this.toolStripStatusLabelFolder.Text = "URL: ";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
@@ -987,6 +939,8 @@
         private System.Windows.Forms.NumericUpDown numericUpDownWalking;
         private System.Windows.Forms.NumericUpDown numericUpDownSitting;
         private System.Windows.Forms.NumericUpDown numericUpDownStanding;
+        private System.Windows.Forms.Button buttonDelete;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelFolder;
     }
 }
 

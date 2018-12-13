@@ -137,9 +137,10 @@ namespace Gesture
                 {
                     dataStr += string.Format("{0}\n", datas[j].Trim());
                 }
-                        
-                // add image string
-                string imgPath = Path.Combine(fileHandle.ImgaeFolder, itemSplit[0] + ".bmp");
+
+                // add image string: ..\..\..\DataFloder\ImagesFolder\ImageName
+                string[] imgPaths = fileHandle.ImgaeFolder.Split(Path.DirectorySeparatorChar);
+                string imgPath = Path.Combine("..", "..", "..", imgPaths[imgPaths.Length - 2], imgPaths[imgPaths.Length - 1],itemSplit[0] + ".bmp");
                 imgStr += string.Format("![{0}]({1})\n\n", itemSplit[0], imgPath);
             }
 
@@ -183,11 +184,16 @@ namespace Gesture
         /// </summary>
         /// <param name="numericUpDown"></param>
         /// <param name="pictureBox"></param>
-        public void DispSample(NumericUpDown numericUpDown, int dispDelay, ref PictureBox pictureBox)
+        public void DispSample(NumericUpDown numericUpDown, int dispDelay, FileHandle fileHandle, ref PictureBox pictureBox)
         {
             // Get md file
             List<List<string>> fileUrls = (List<List<string>>)numericUpDown.Tag;
-            string mdFile = fileUrls[Convert.ToInt32(numericUpDown.Value) - 1][1];
+            int fileIndex = Convert.ToInt32(numericUpDown.Value) - 1;
+            if (fileUrls == null || fileIndex < 0 || fileIndex > fileUrls.Count - 1 )
+            {
+                return;
+            }
+            string mdFile = fileUrls[fileIndex][1];
 
             // Read md file
             string[] readLines;
@@ -213,7 +219,11 @@ namespace Gesture
                 // Read bitmap
                 string[] lineSplit = line.Split('(');
                 string imgUrl = lineSplit[1].Split(')')[0];
-                Bitmap bitmap  = new Bitmap(imgUrl);
+                string[] imgUrlSplit = imgUrl.Split(Path.DirectorySeparatorChar);
+                string outputFolder = fileHandle.OutputFolder;
+                int outputIndex = outputFolder.LastIndexOf(Path.DirectorySeparatorChar);
+                Bitmap bitmap  = new Bitmap(Path.Combine(outputFolder.Remove(outputIndex, outputFolder.Length - outputIndex), 
+                                                         imgUrlSplit[imgUrlSplit.Length-3], imgUrlSplit[imgUrlSplit.Length-2], imgUrlSplit[imgUrlSplit.Length-1]));
 
                 // Draw the image
                 pictureBox.Image = bitmap;

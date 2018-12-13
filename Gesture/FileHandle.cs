@@ -166,8 +166,15 @@ namespace Gesture
         /// <returns></returns>
         public Bitmap ReadImg(string imgPath)
         {
-            Bitmap bitmap = new Bitmap(imgPath);
-            return (bitmap);
+            if (File.Exists(imgPath))
+            {
+                Bitmap bitmap = new Bitmap(imgPath);
+                return (bitmap);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -184,6 +191,38 @@ namespace Gesture
         // ---------------------------------------------------------------------------------------------------- //
         // ---------------------------------------------------------------------------------------------------- //
         // ---------------------------------------------------------------------------------------------------- //
+
+        public string IMAGE_FOLDER_NAME
+        {
+            get
+            {
+                return m_IMAGE_FOLDER_NAME;
+            }
+        }
+
+        public string LABEL_FOLDER_NAME
+        {
+            get
+            {
+                return m_LABEL_FOLDER_NAME;
+            }
+        }
+
+        public string DATA_FILE_NAME
+        {
+            get
+            {
+                return m_DATA_FILE_NAME;
+            }
+        }
+
+        public string OutputFolder
+        {
+            get
+            {
+                return m_outputFolder;
+            }
+        }
 
         public string ImgaeFolder
         {
