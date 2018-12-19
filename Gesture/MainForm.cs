@@ -10,6 +10,7 @@ using System.Collections.Generic;
 
 using nuitrack;
 using nuitrack.issues;
+using TensorFlow;
 
 namespace Gesture
 {
@@ -359,96 +360,27 @@ namespace Gesture
         }
 
         /// <summary>
-        /// Delete useless images
+        /// Test sample using pb model
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonDelete_Click(object sender, EventArgs e)
+        private void buttonTestSample_Click(object sender, EventArgs e)
         {
-            // Selete a data file
-            string dataFile = string.Empty;
-            OpenFileDialog openFileDialog   = new OpenFileDialog();
-            openFileDialog.InitialDirectory = Path.Combine(Application.StartupPath, "Output");
-            openFileDialog.RestoreDirectory = true;
-            openFileDialog.Title            = "Please select the data file. ";
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            var graph = new TFGraph();
+            var model = File.ReadAllBytes(model_file);
+            graph.Import(model);
+            Console.WriteLine("请输入一个图片的地址");
+            var src = Console.ReadLine();
+            var tensor = ImageUtil.CreateTensorFromImageFile(src);
+            using (var sess = new TFSession(graph))
             {
-                dataFile = openFileDialog.FileName;
+                var runner = sess.GetRunner();
+                runner.AddInput(graph["Cast_1"][0], tensor);
+                var r = runner.Run(graph.softmax(graph["softmax_linear/softmax_linear"][0]));
+                var v = (float[,])r.GetValue();
+                Console.WriteLine(v[0,0]);
+                Console.WriteLine(v[0, 1]);
             }
-            else
-            {
-                return;
-            }
-
-            // Set the m_fileHandle
-            string dataFolder = Path.GetDirectoryName(dataFile);
-            DialogResult result = MessageBox.Show(string.Format("Are you sure to delete the unused images in the folder: \n{0}?", dataFolder), 
-                                                  "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (result == DialogResult.Yes)
-            {
-                // Get all the useful images
-                List<string> imgUrlsList = new List<string>();
-                string labelFolder = Path.Combine(dataFolder, m_fileHandle.LABEL_FOLDER_NAME);
-                foreach (string labelname in m_LABELNAMES)
-                {
-                    // Every label folder
-                    string mdFolder = Path.Combine(labelFolder, labelname);
-                    string[] mdUrls = Directory.GetFiles(mdFolder);
-                    foreach (string mdUrl in mdUrls)
-                    {
-                        // Continue if not markdown file
-                        if (Path.GetExtension(mdUrl) != ".md")
-                        {
-                            continue;
-                        }
-
-                        // Read md file
-                        string[] lines = File.ReadAllLines(mdUrl);
-                        foreach (string line in lines)
-                        {
-                            // Continue if line is empty
-                            if (string.IsNullOrWhiteSpace(line))
-                            {
-                                continue;
-                            }
-
-                            // Get the img url
-                            string[] lineSplit = line.Split('(');
-                            string imgUrl = lineSplit[1].Split(')')[0];
-
-                            // Add 
-                            if (string.IsNullOrWhiteSpace(imgUrlsList.Find(zp => zp == imgUrl)))
-                            {
-                                imgUrlsList.Add(imgUrl);
-                            }
-                        }
-                    }
-                }
-
-                // Delete the unused images
-                string imgFolder = Path.Combine(dataFolder, m_fileHandle.IMAGE_FOLDER_NAME);
-                string[] imgUrls = Directory.GetFiles(imgFolder);
-                foreach (string imgUrl in imgUrls)
-                {
-                    // add image string: ..\..\..\DataFloder\ImagesFolder\ImageName
-                    string[] imgUrlSplit = imgUrl.Split(Path.DirectorySeparatorChar);
-                    string imgPath = Path.Combine("..", "..", "..", imgUrlSplit[imgUrlSplit.Length - 3], imgUrlSplit[imgUrlSplit.Length - 2], imgUrlSplit[imgUrlSplit.Length - 1]);
-                    if (string.IsNullOrWhiteSpace(imgUrlsList.Find(zp => zp == imgPath)))
-                    {
-                        if (File.Exists(imgUrl))
-                        {
-                            File.Delete(imgUrl);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                return;
-            }
-
-            // Unused images have been deleted.
-            MessageBox.Show("Unused images have been deleted. ");
         }
 
         // ---------------------------------------------------------------------------------------------------- //
@@ -688,6 +620,99 @@ namespace Gesture
                     numericUpDownGroup[i].ValueChanged += eventHandlerGroup[i];
                 }
             }
+        }
+
+        /// <summary>
+        /// Delete useless images
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            // Selete a data file
+            string dataFile = string.Empty;
+            OpenFileDialog openFileDialog   = new OpenFileDialog();
+            openFileDialog.InitialDirectory = Path.Combine(Application.StartupPath, "Output");
+            openFileDialog.RestoreDirectory = true;
+            openFileDialog.Title            = "Please select the data file. ";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                dataFile = openFileDialog.FileName;
+            }
+            else
+            {
+                return;
+            }
+
+            // Set the m_fileHandle
+            string dataFolder = Path.GetDirectoryName(dataFile);
+            DialogResult result = MessageBox.Show(string.Format("Are you sure to delete the unused images in the folder: \n{0}?", dataFolder), 
+                                                  "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (result == DialogResult.Yes)
+            {
+                // Get all the useful images
+                List<string> imgUrlsList = new List<string>();
+                string labelFolder = Path.Combine(dataFolder, m_fileHandle.LABEL_FOLDER_NAME);
+                foreach (string labelname in m_LABELNAMES)
+                {
+                    // Every label folder
+                    string mdFolder = Path.Combine(labelFolder, labelname);
+                    string[] mdUrls = Directory.GetFiles(mdFolder);
+                    foreach (string mdUrl in mdUrls)
+                    {
+                        // Continue if not markdown file
+                        if (Path.GetExtension(mdUrl) != ".md")
+                        {
+                            continue;
+                        }
+
+                        // Read md file
+                        string[] lines = File.ReadAllLines(mdUrl);
+                        foreach (string line in lines)
+                        {
+                            // Continue if line is empty
+                            if (string.IsNullOrWhiteSpace(line))
+                            {
+                                continue;
+                            }
+
+                            // Get the img url
+                            string[] lineSplit = line.Split('(');
+                            string imgUrl = lineSplit[1].Split(')')[0];
+
+                            // Add 
+                            if (string.IsNullOrWhiteSpace(imgUrlsList.Find(zp => zp == imgUrl)))
+                            {
+                                imgUrlsList.Add(imgUrl);
+                            }
+                        }
+                    }
+                }
+
+                // Delete the unused images
+                string imgFolder = Path.Combine(dataFolder, m_fileHandle.IMAGE_FOLDER_NAME);
+                string[] imgUrls = Directory.GetFiles(imgFolder);
+                foreach (string imgUrl in imgUrls)
+                {
+                    // add image string: ..\..\..\DataFloder\ImagesFolder\ImageName
+                    string[] imgUrlSplit = imgUrl.Split(Path.DirectorySeparatorChar);
+                    string imgPath = Path.Combine("..", "..", "..", imgUrlSplit[imgUrlSplit.Length - 3], imgUrlSplit[imgUrlSplit.Length - 2], imgUrlSplit[imgUrlSplit.Length - 1]);
+                    if (string.IsNullOrWhiteSpace(imgUrlsList.Find(zp => zp == imgPath)))
+                    {
+                        if (File.Exists(imgUrl))
+                        {
+                            File.Delete(imgUrl);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return;
+            }
+
+            // Unused images have been deleted.
+            MessageBox.Show("Unused images have been deleted. ");
         }
 
         // ---------- Write label data

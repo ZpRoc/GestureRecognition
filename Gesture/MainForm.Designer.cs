@@ -49,6 +49,8 @@
             this.toolStripStatusLabelAvgTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelMaxTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabPageLabel = new System.Windows.Forms.TabPage();
+            this.buttonSearch = new System.Windows.Forms.Button();
+            this.textBoxSearch = new System.Windows.Forms.TextBox();
             this.buttonDelete = new System.Windows.Forms.Button();
             this.numericUpDownOthers = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownTurnBack = new System.Windows.Forms.NumericUpDown();
@@ -62,6 +64,7 @@
             this.buttonOthers = new System.Windows.Forms.Button();
             this.buttonSitting = new System.Windows.Forms.Button();
             this.numericUpDownCoverData = new System.Windows.Forms.NumericUpDown();
+            this.buttonAutoSelect = new System.Windows.Forms.Button();
             this.numericUpDownDispDelay = new System.Windows.Forms.NumericUpDown();
             this.buttonDispVedio = new System.Windows.Forms.Button();
             this.buttonTurnBackCnt = new System.Windows.Forms.Button();
@@ -87,9 +90,7 @@
             this.buttonWalking = new System.Windows.Forms.Button();
             this.timerGrab = new System.Windows.Forms.Timer(this.components);
             this.pictureBox = new System.Windows.Forms.PictureBox();
-            this.textBoxSearch = new System.Windows.Forms.TextBox();
-            this.buttonAutoSelect = new System.Windows.Forms.Button();
-            this.buttonSearch = new System.Windows.Forms.Button();
+            this.buttonTestSample = new System.Windows.Forms.Button();
             this.panelControl.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPageGrab.SuspendLayout();
@@ -135,6 +136,7 @@
             // 
             // tabPageGrab
             // 
+            this.tabPageGrab.Controls.Add(this.buttonTestSample);
             this.tabPageGrab.Controls.Add(this.labelCameraInfo);
             this.tabPageGrab.Controls.Add(this.numericUpDownHeight);
             this.tabPageGrab.Controls.Add(this.numericUpDownWidth);
@@ -397,6 +399,27 @@
             this.tabPageLabel.Text = "Label";
             this.tabPageLabel.UseVisualStyleBackColor = true;
             // 
+            // buttonSearch
+            // 
+            this.buttonSearch.BackColor = System.Drawing.Color.Transparent;
+            this.buttonSearch.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonSearch.Location = new System.Drawing.Point(290, 105);
+            this.buttonSearch.Name = "buttonSearch";
+            this.buttonSearch.Size = new System.Drawing.Size(48, 32);
+            this.buttonSearch.TabIndex = 47;
+            this.buttonSearch.Text = "🔍";
+            this.buttonSearch.UseVisualStyleBackColor = false;
+            this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
+            // 
+            // textBoxSearch
+            // 
+            this.textBoxSearch.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.textBoxSearch.Location = new System.Drawing.Point(128, 109);
+            this.textBoxSearch.Name = "textBoxSearch";
+            this.textBoxSearch.Size = new System.Drawing.Size(156, 25);
+            this.textBoxSearch.TabIndex = 46;
+            this.textBoxSearch.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // buttonDelete
             // 
             this.buttonDelete.BackColor = System.Drawing.Color.Red;
@@ -570,6 +593,17 @@
             0,
             0,
             0});
+            // 
+            // buttonAutoSelect
+            // 
+            this.buttonAutoSelect.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonAutoSelect.Location = new System.Drawing.Point(128, 138);
+            this.buttonAutoSelect.Name = "buttonAutoSelect";
+            this.buttonAutoSelect.Size = new System.Drawing.Size(64, 32);
+            this.buttonAutoSelect.TabIndex = 31;
+            this.buttonAutoSelect.Text = "Auto";
+            this.buttonAutoSelect.UseVisualStyleBackColor = true;
+            this.buttonAutoSelect.Click += new System.EventHandler(this.buttonAutoSelect_Click);
             // 
             // numericUpDownDispDelay
             // 
@@ -833,37 +867,17 @@
             this.pictureBox.TabIndex = 1;
             this.pictureBox.TabStop = false;
             // 
-            // textBoxSearch
+            // buttonTestSample
             // 
-            this.textBoxSearch.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.textBoxSearch.Location = new System.Drawing.Point(128, 109);
-            this.textBoxSearch.Name = "textBoxSearch";
-            this.textBoxSearch.Size = new System.Drawing.Size(156, 25);
-            this.textBoxSearch.TabIndex = 46;
-            this.textBoxSearch.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // buttonAutoSelect
-            // 
-            this.buttonAutoSelect.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonAutoSelect.Location = new System.Drawing.Point(128, 138);
-            this.buttonAutoSelect.Name = "buttonAutoSelect";
-            this.buttonAutoSelect.Size = new System.Drawing.Size(64, 32);
-            this.buttonAutoSelect.TabIndex = 31;
-            this.buttonAutoSelect.Text = "Auto";
-            this.buttonAutoSelect.UseVisualStyleBackColor = true;
-            this.buttonAutoSelect.Click += new System.EventHandler(this.buttonAutoSelect_Click);
-            // 
-            // buttonSearch
-            // 
-            this.buttonSearch.BackColor = System.Drawing.Color.Transparent;
-            this.buttonSearch.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonSearch.Location = new System.Drawing.Point(290, 105);
-            this.buttonSearch.Name = "buttonSearch";
-            this.buttonSearch.Size = new System.Drawing.Size(48, 32);
-            this.buttonSearch.TabIndex = 47;
-            this.buttonSearch.Text = "🔍";
-            this.buttonSearch.UseVisualStyleBackColor = false;
-            this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
+            this.buttonTestSample.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonTestSample.Location = new System.Drawing.Point(253, 388);
+            this.buttonTestSample.Name = "buttonTestSample";
+            this.buttonTestSample.Size = new System.Drawing.Size(100, 32);
+            this.buttonTestSample.TabIndex = 17;
+            this.buttonTestSample.Tag = "0";
+            this.buttonTestSample.Text = "Test";
+            this.buttonTestSample.UseVisualStyleBackColor = true;
+            this.buttonTestSample.Click += new System.EventHandler(this.buttonTestSample_Click);
             // 
             // MainForm
             // 
@@ -968,6 +982,7 @@
         private System.Windows.Forms.TextBox textBoxSearch;
         private System.Windows.Forms.Button buttonSearch;
         private System.Windows.Forms.Button buttonAutoSelect;
+        private System.Windows.Forms.Button buttonTestSample;
     }
 }
 
