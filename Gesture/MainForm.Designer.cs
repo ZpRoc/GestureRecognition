@@ -32,6 +32,8 @@
             this.panelControl = new System.Windows.Forms.Panel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageGrab = new System.Windows.Forms.TabPage();
+            this.buttonLoadPb = new System.Windows.Forms.Button();
+            this.buttonTestSample = new System.Windows.Forms.Button();
             this.labelCameraInfo = new System.Windows.Forms.Label();
             this.numericUpDownHeight = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownWidth = new System.Windows.Forms.NumericUpDown();
@@ -90,7 +92,9 @@
             this.buttonWalking = new System.Windows.Forms.Button();
             this.timerGrab = new System.Windows.Forms.Timer(this.components);
             this.pictureBox = new System.Windows.Forms.PictureBox();
-            this.buttonTestSample = new System.Windows.Forms.Button();
+            this.labelDisp = new System.Windows.Forms.Label();
+            this.panelDisp = new System.Windows.Forms.Panel();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.panelControl.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPageGrab.SuspendLayout();
@@ -111,6 +115,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCombineData)).BeginInit();
             this.statusStripLabel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
+            this.panelDisp.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelControl
@@ -136,6 +141,7 @@
             // 
             // tabPageGrab
             // 
+            this.tabPageGrab.Controls.Add(this.buttonLoadPb);
             this.tabPageGrab.Controls.Add(this.buttonTestSample);
             this.tabPageGrab.Controls.Add(this.labelCameraInfo);
             this.tabPageGrab.Controls.Add(this.numericUpDownHeight);
@@ -156,6 +162,30 @@
             this.tabPageGrab.TabIndex = 0;
             this.tabPageGrab.Text = "Grab";
             this.tabPageGrab.UseVisualStyleBackColor = true;
+            // 
+            // buttonLoadPb
+            // 
+            this.buttonLoadPb.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonLoadPb.Location = new System.Drawing.Point(253, 350);
+            this.buttonLoadPb.Name = "buttonLoadPb";
+            this.buttonLoadPb.Size = new System.Drawing.Size(100, 32);
+            this.buttonLoadPb.TabIndex = 18;
+            this.buttonLoadPb.Tag = "0";
+            this.buttonLoadPb.Text = "Load";
+            this.buttonLoadPb.UseVisualStyleBackColor = true;
+            this.buttonLoadPb.Click += new System.EventHandler(this.buttonLoadPb_Click);
+            // 
+            // buttonTestSample
+            // 
+            this.buttonTestSample.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonTestSample.Location = new System.Drawing.Point(253, 388);
+            this.buttonTestSample.Name = "buttonTestSample";
+            this.buttonTestSample.Size = new System.Drawing.Size(100, 32);
+            this.buttonTestSample.TabIndex = 17;
+            this.buttonTestSample.Tag = "0";
+            this.buttonTestSample.Text = "Test";
+            this.buttonTestSample.UseVisualStyleBackColor = true;
+            this.buttonTestSample.Click += new System.EventHandler(this.buttonTestSample_Click);
             // 
             // labelCameraInfo
             // 
@@ -860,32 +890,50 @@
             // 
             // pictureBox
             // 
-            this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox.Location = new System.Drawing.Point(0, 0);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(640, 480);
             this.pictureBox.TabIndex = 1;
             this.pictureBox.TabStop = false;
             // 
-            // buttonTestSample
+            // labelDisp
             // 
-            this.buttonTestSample.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonTestSample.Location = new System.Drawing.Point(253, 388);
-            this.buttonTestSample.Name = "buttonTestSample";
-            this.buttonTestSample.Size = new System.Drawing.Size(100, 32);
-            this.buttonTestSample.TabIndex = 17;
-            this.buttonTestSample.Tag = "0";
-            this.buttonTestSample.Text = "Test";
-            this.buttonTestSample.UseVisualStyleBackColor = true;
-            this.buttonTestSample.Click += new System.EventHandler(this.buttonTestSample_Click);
+            this.labelDisp.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 72F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.labelDisp.Location = new System.Drawing.Point(3, 3);
+            this.labelDisp.Name = "labelDisp";
+            this.labelDisp.Size = new System.Drawing.Size(500, 127);
+            this.labelDisp.TabIndex = 2;
+            this.labelDisp.Text = "StandUp";
+            this.labelDisp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // panelDisp
+            // 
+            this.panelDisp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelDisp.Controls.Add(this.textBox1);
+            this.panelDisp.Controls.Add(this.labelDisp);
+            this.panelDisp.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelDisp.Location = new System.Drawing.Point(0, 480);
+            this.panelDisp.Name = "panelDisp";
+            this.panelDisp.Size = new System.Drawing.Size(1008, 249);
+            this.panelDisp.TabIndex = 3;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.textBox1.Location = new System.Drawing.Point(506, 0);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(500, 247);
+            this.textBox1.TabIndex = 3;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1008, 480);
+            this.ClientSize = new System.Drawing.Size(1008, 729);
             this.Controls.Add(this.pictureBox);
             this.Controls.Add(this.panelControl);
+            this.Controls.Add(this.panelDisp);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -915,6 +963,8 @@
             this.statusStripLabel.ResumeLayout(false);
             this.statusStripLabel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+            this.panelDisp.ResumeLayout(false);
+            this.panelDisp.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -983,6 +1033,10 @@
         private System.Windows.Forms.Button buttonSearch;
         private System.Windows.Forms.Button buttonAutoSelect;
         private System.Windows.Forms.Button buttonTestSample;
+        private System.Windows.Forms.Button buttonLoadPb;
+        private System.Windows.Forms.Label labelDisp;
+        private System.Windows.Forms.Panel panelDisp;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

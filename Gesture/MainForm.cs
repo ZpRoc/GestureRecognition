@@ -55,6 +55,11 @@ namespace Gesture
         List<double> m_skeletonDataList = new List<double>();
         string[] m_skeletonDataLines;
 
+        // Call net
+        TFTensor m_tfTensor;            // Input data
+        TFGraph m_tfGraph;              // tf.Graph
+        TFSession m_tfSess;             // tf.Session
+
         public MainForm()
         {
             InitializeComponent();
@@ -359,6 +364,41 @@ namespace Gesture
             }
         }
 
+        // ---------------------------------------------------------------------------------------------------- //
+        // ------------------------------- Important form control events: Label ------------------------------- //
+        // ---------------------------------------------------------------------------------------------------- //
+
+        /// <summary>
+        /// Load pb model
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonLoadPb_Click(object sender, EventArgs e)
+        {
+            // Selete a pb model file
+            string pbFile = string.Empty;
+            OpenFileDialog openFileDialog   = new OpenFileDialog();
+            openFileDialog.RestoreDirectory = true;
+            openFileDialog.Title            = "Please select pb model file. ";
+            openFileDialog.Filter           = "pb|*.pb";
+;           if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                pbFile = openFileDialog.FileName;
+            }
+            else
+            {
+                return;
+            }
+
+            // Load pb model
+            m_tfGraph = new TFGraph();
+            m_tfGraph.Import(File.ReadAllBytes(pbFile));
+
+            // Initial tf.Session
+            m_tfSess = new TFSession(m_tfGraph);
+            
+        }
+
         /// <summary>
         /// Test sample using pb model
         /// </summary>
@@ -366,21 +406,38 @@ namespace Gesture
         /// <param name="e"></param>
         private void buttonTestSample_Click(object sender, EventArgs e)
         {
-            var graph = new TFGraph();
-            var model = File.ReadAllBytes(model_file);
-            graph.Import(model);
-            Console.WriteLine("请输入一个图片的地址");
-            var src = Console.ReadLine();
-            var tensor = ImageUtil.CreateTensorFromImageFile(src);
-            using (var sess = new TFSession(graph))
+            // Read all lines
+            string dataUrl = @"D:\ZpRocProgram\Gesture\Gesture\bin\x64\Debug\Output\All\Labels\Walking\2018-12-13 09-56-38.txt";
+            string[] dataLines = File.ReadAllLines(dataUrl);
+
+            // Loop
+            float[,] dataArr = new float[1, 4500];
+            for (int i = 0; i < dataLines.Length; i++)
             {
-                var runner = sess.GetRunner();
-                runner.AddInput(graph["Cast_1"][0], tensor);
-                var r = runner.Run(graph.softmax(graph["softmax_linear/softmax_linear"][0]));
-                var v = (float[,])r.GetValue();
-                Console.WriteLine(v[0,0]);
-                Console.WriteLine(v[0, 1]);
+                if (!string.IsNullOrWhiteSpace(dataLines[i]))
+                {
+                    dataArr[0, i] = (float)Convert.ToDouble(dataLines[i]);
+                }
             }
+
+            // Define data tensor
+            TFTensor dataTensor = new TFTensor(dataArr);
+
+            // Call model
+            TFSession.Runner tfRunner = m_tfSess.GetRunner();
+            tfRunner.AddInput(m_tfGraph["is_training"][0], false);
+            tfRunner.AddInput(m_tfGraph["batch_images"][0], dataTensor);
+
+            DateTime time = DateTime.Now;
+            TFTensor testPct = tfRunner.Run(m_tfGraph["test_pct"][0]);
+            Trace.WriteLine(string.Format("Time: {0}", (DateTime.Now - time).TotalMilliseconds.ToString()));
+
+            // Get the label with max value
+            var v = (float[,])testPct.GetValue();
+
+
+            // Disp
+
         }
 
         // ---------------------------------------------------------------------------------------------------- //
