@@ -49,6 +49,7 @@
             this.toolStripStatusLabelAvgTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelMaxTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabPageLabel = new System.Windows.Forms.TabPage();
+            this.buttonDelete = new System.Windows.Forms.Button();
             this.numericUpDownOthers = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownTurnBack = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownSitDown = new System.Windows.Forms.NumericUpDown();
@@ -61,7 +62,6 @@
             this.buttonOthers = new System.Windows.Forms.Button();
             this.buttonSitting = new System.Windows.Forms.Button();
             this.numericUpDownCoverData = new System.Windows.Forms.NumericUpDown();
-            this.buttonAutoSelect = new System.Windows.Forms.Button();
             this.numericUpDownDispDelay = new System.Windows.Forms.NumericUpDown();
             this.buttonDispVedio = new System.Windows.Forms.Button();
             this.buttonTurnBackCnt = new System.Windows.Forms.Button();
@@ -78,6 +78,7 @@
             this.toolStripStatusLabelSelectData = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelSeparator = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelAllData = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabelFolder = new System.Windows.Forms.ToolStripStatusLabel();
             this.buttonLoadData = new System.Windows.Forms.Button();
             this.buttonStanding = new System.Windows.Forms.Button();
             this.buttonTurnBack = new System.Windows.Forms.Button();
@@ -86,8 +87,9 @@
             this.buttonWalking = new System.Windows.Forms.Button();
             this.timerGrab = new System.Windows.Forms.Timer(this.components);
             this.pictureBox = new System.Windows.Forms.PictureBox();
-            this.buttonDelete = new System.Windows.Forms.Button();
-            this.toolStripStatusLabelFolder = new System.Windows.Forms.ToolStripStatusLabel();
+            this.textBoxSearch = new System.Windows.Forms.TextBox();
+            this.buttonAutoSelect = new System.Windows.Forms.Button();
+            this.buttonSearch = new System.Windows.Forms.Button();
             this.panelControl.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPageGrab.SuspendLayout();
@@ -352,6 +354,8 @@
             // 
             // tabPageLabel
             // 
+            this.tabPageLabel.Controls.Add(this.buttonSearch);
+            this.tabPageLabel.Controls.Add(this.textBoxSearch);
             this.tabPageLabel.Controls.Add(this.buttonDelete);
             this.tabPageLabel.Controls.Add(this.numericUpDownOthers);
             this.tabPageLabel.Controls.Add(this.numericUpDownTurnBack);
@@ -393,10 +397,22 @@
             this.tabPageLabel.Text = "Label";
             this.tabPageLabel.UseVisualStyleBackColor = true;
             // 
+            // buttonDelete
+            // 
+            this.buttonDelete.BackColor = System.Drawing.Color.Red;
+            this.buttonDelete.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonDelete.Location = new System.Drawing.Point(290, 138);
+            this.buttonDelete.Name = "buttonDelete";
+            this.buttonDelete.Size = new System.Drawing.Size(48, 32);
+            this.buttonDelete.TabIndex = 45;
+            this.buttonDelete.Text = "Dlt";
+            this.buttonDelete.UseVisualStyleBackColor = false;
+            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            // 
             // numericUpDownOthers
             // 
             this.numericUpDownOthers.Enabled = false;
-            this.numericUpDownOthers.Location = new System.Drawing.Point(288, 390);
+            this.numericUpDownOthers.Location = new System.Drawing.Point(288, 387);
             this.numericUpDownOthers.Maximum = new decimal(new int[] {
             0,
             0,
@@ -426,7 +442,7 @@
             // numericUpDownSitDown
             // 
             this.numericUpDownSitDown.Enabled = false;
-            this.numericUpDownSitDown.Location = new System.Drawing.Point(288, 314);
+            this.numericUpDownSitDown.Location = new System.Drawing.Point(288, 317);
             this.numericUpDownSitDown.Maximum = new decimal(new int[] {
             0,
             0,
@@ -441,7 +457,7 @@
             // numericUpDownStandUp
             // 
             this.numericUpDownStandUp.Enabled = false;
-            this.numericUpDownStandUp.Location = new System.Drawing.Point(288, 276);
+            this.numericUpDownStandUp.Location = new System.Drawing.Point(288, 282);
             this.numericUpDownStandUp.Maximum = new decimal(new int[] {
             0,
             0,
@@ -456,7 +472,7 @@
             // numericUpDownWalking
             // 
             this.numericUpDownWalking.Enabled = false;
-            this.numericUpDownWalking.Location = new System.Drawing.Point(288, 238);
+            this.numericUpDownWalking.Location = new System.Drawing.Point(288, 247);
             this.numericUpDownWalking.Maximum = new decimal(new int[] {
             0,
             0,
@@ -471,7 +487,7 @@
             // numericUpDownSitting
             // 
             this.numericUpDownSitting.Enabled = false;
-            this.numericUpDownSitting.Location = new System.Drawing.Point(288, 200);
+            this.numericUpDownSitting.Location = new System.Drawing.Point(288, 212);
             this.numericUpDownSitting.Maximum = new decimal(new int[] {
             0,
             0,
@@ -486,7 +502,7 @@
             // numericUpDownStanding
             // 
             this.numericUpDownStanding.Enabled = false;
-            this.numericUpDownStanding.Location = new System.Drawing.Point(288, 162);
+            this.numericUpDownStanding.Location = new System.Drawing.Point(288, 177);
             this.numericUpDownStanding.Maximum = new decimal(new int[] {
             0,
             0,
@@ -501,7 +517,7 @@
             // buttonOthersCnt
             // 
             this.buttonOthersCnt.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonOthersCnt.Location = new System.Drawing.Point(234, 386);
+            this.buttonOthersCnt.Location = new System.Drawing.Point(234, 383);
             this.buttonOthersCnt.Name = "buttonOthersCnt";
             this.buttonOthersCnt.Size = new System.Drawing.Size(48, 32);
             this.buttonOthersCnt.TabIndex = 37;
@@ -512,7 +528,7 @@
             // buttonSittingCnt
             // 
             this.buttonSittingCnt.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonSittingCnt.Location = new System.Drawing.Point(234, 196);
+            this.buttonSittingCnt.Location = new System.Drawing.Point(234, 208);
             this.buttonSittingCnt.Name = "buttonSittingCnt";
             this.buttonSittingCnt.Size = new System.Drawing.Size(48, 32);
             this.buttonSittingCnt.TabIndex = 36;
@@ -523,7 +539,7 @@
             // buttonOthers
             // 
             this.buttonOthers.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonOthers.Location = new System.Drawing.Point(128, 386);
+            this.buttonOthers.Location = new System.Drawing.Point(128, 383);
             this.buttonOthers.Name = "buttonOthers";
             this.buttonOthers.Size = new System.Drawing.Size(100, 32);
             this.buttonOthers.TabIndex = 35;
@@ -534,7 +550,7 @@
             // buttonSitting
             // 
             this.buttonSitting.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonSitting.Location = new System.Drawing.Point(128, 196);
+            this.buttonSitting.Location = new System.Drawing.Point(128, 208);
             this.buttonSitting.Name = "buttonSitting";
             this.buttonSitting.Size = new System.Drawing.Size(100, 32);
             this.buttonSitting.TabIndex = 34;
@@ -544,7 +560,7 @@
             // 
             // numericUpDownCoverData
             // 
-            this.numericUpDownCoverData.Location = new System.Drawing.Point(301, 48);
+            this.numericUpDownCoverData.Location = new System.Drawing.Point(301, 46);
             this.numericUpDownCoverData.Name = "numericUpDownCoverData";
             this.numericUpDownCoverData.Size = new System.Drawing.Size(48, 25);
             this.numericUpDownCoverData.TabIndex = 33;
@@ -555,20 +571,9 @@
             0,
             0});
             // 
-            // buttonAutoSelect
-            // 
-            this.buttonAutoSelect.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonAutoSelect.Location = new System.Drawing.Point(128, 120);
-            this.buttonAutoSelect.Name = "buttonAutoSelect";
-            this.buttonAutoSelect.Size = new System.Drawing.Size(64, 32);
-            this.buttonAutoSelect.TabIndex = 31;
-            this.buttonAutoSelect.Text = "Auto";
-            this.buttonAutoSelect.UseVisualStyleBackColor = true;
-            this.buttonAutoSelect.Click += new System.EventHandler(this.buttonAutoSelect_Click);
-            // 
             // numericUpDownDispDelay
             // 
-            this.numericUpDownDispDelay.Location = new System.Drawing.Point(236, 124);
+            this.numericUpDownDispDelay.Location = new System.Drawing.Point(236, 142);
             this.numericUpDownDispDelay.Maximum = new decimal(new int[] {
             32,
             0,
@@ -587,7 +592,7 @@
             // buttonDispVedio
             // 
             this.buttonDispVedio.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonDispVedio.Location = new System.Drawing.Point(198, 120);
+            this.buttonDispVedio.Location = new System.Drawing.Point(198, 138);
             this.buttonDispVedio.Name = "buttonDispVedio";
             this.buttonDispVedio.Size = new System.Drawing.Size(32, 32);
             this.buttonDispVedio.TabIndex = 29;
@@ -609,7 +614,7 @@
             // buttonSitDownCnt
             // 
             this.buttonSitDownCnt.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonSitDownCnt.Location = new System.Drawing.Point(234, 310);
+            this.buttonSitDownCnt.Location = new System.Drawing.Point(234, 313);
             this.buttonSitDownCnt.Name = "buttonSitDownCnt";
             this.buttonSitDownCnt.Size = new System.Drawing.Size(48, 32);
             this.buttonSitDownCnt.TabIndex = 27;
@@ -620,7 +625,7 @@
             // buttonStandUpCnt
             // 
             this.buttonStandUpCnt.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonStandUpCnt.Location = new System.Drawing.Point(234, 272);
+            this.buttonStandUpCnt.Location = new System.Drawing.Point(234, 278);
             this.buttonStandUpCnt.Name = "buttonStandUpCnt";
             this.buttonStandUpCnt.Size = new System.Drawing.Size(48, 32);
             this.buttonStandUpCnt.TabIndex = 26;
@@ -631,7 +636,7 @@
             // buttonWalkingCnt
             // 
             this.buttonWalkingCnt.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonWalkingCnt.Location = new System.Drawing.Point(234, 234);
+            this.buttonWalkingCnt.Location = new System.Drawing.Point(234, 243);
             this.buttonWalkingCnt.Name = "buttonWalkingCnt";
             this.buttonWalkingCnt.Size = new System.Drawing.Size(48, 32);
             this.buttonWalkingCnt.TabIndex = 25;
@@ -642,7 +647,7 @@
             // buttonStandingCnt
             // 
             this.buttonStandingCnt.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonStandingCnt.Location = new System.Drawing.Point(234, 158);
+            this.buttonStandingCnt.Location = new System.Drawing.Point(234, 173);
             this.buttonStandingCnt.Name = "buttonStandingCnt";
             this.buttonStandingCnt.Size = new System.Drawing.Size(48, 32);
             this.buttonStandingCnt.TabIndex = 24;
@@ -663,7 +668,7 @@
             // labelSelectLable
             // 
             this.labelSelectLable.AutoSize = true;
-            this.labelSelectLable.Location = new System.Drawing.Point(120, 89);
+            this.labelSelectLable.Location = new System.Drawing.Point(120, 85);
             this.labelSelectLable.Name = "labelSelectLable";
             this.labelSelectLable.Size = new System.Drawing.Size(121, 19);
             this.labelSelectLable.TabIndex = 16;
@@ -672,7 +677,7 @@
             // 
             // numericUpDownCombineData
             // 
-            this.numericUpDownCombineData.Location = new System.Drawing.Point(247, 48);
+            this.numericUpDownCombineData.Location = new System.Drawing.Point(247, 46);
             this.numericUpDownCombineData.Minimum = new decimal(new int[] {
             10,
             0,
@@ -691,7 +696,7 @@
             // labelCombineData
             // 
             this.labelCombineData.AutoSize = true;
-            this.labelCombineData.Location = new System.Drawing.Point(112, 51);
+            this.labelCombineData.Location = new System.Drawing.Point(112, 49);
             this.labelCombineData.Name = "labelCombineData";
             this.labelCombineData.Size = new System.Drawing.Size(129, 19);
             this.labelCombineData.TabIndex = 14;
@@ -742,6 +747,12 @@
             this.toolStripStatusLabelAllData.Size = new System.Drawing.Size(43, 17);
             this.toolStripStatusLabelAllData.Text = "00000";
             // 
+            // toolStripStatusLabelFolder
+            // 
+            this.toolStripStatusLabelFolder.Name = "toolStripStatusLabelFolder";
+            this.toolStripStatusLabelFolder.Size = new System.Drawing.Size(38, 17);
+            this.toolStripStatusLabelFolder.Text = "URL: ";
+            // 
             // buttonLoadData
             // 
             this.buttonLoadData.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
@@ -756,7 +767,7 @@
             // buttonStanding
             // 
             this.buttonStanding.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonStanding.Location = new System.Drawing.Point(128, 158);
+            this.buttonStanding.Location = new System.Drawing.Point(128, 173);
             this.buttonStanding.Name = "buttonStanding";
             this.buttonStanding.Size = new System.Drawing.Size(100, 32);
             this.buttonStanding.TabIndex = 9;
@@ -778,7 +789,7 @@
             // buttonSitDown
             // 
             this.buttonSitDown.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonSitDown.Location = new System.Drawing.Point(128, 310);
+            this.buttonSitDown.Location = new System.Drawing.Point(128, 313);
             this.buttonSitDown.Name = "buttonSitDown";
             this.buttonSitDown.Size = new System.Drawing.Size(100, 32);
             this.buttonSitDown.TabIndex = 7;
@@ -789,7 +800,7 @@
             // buttonStandUp
             // 
             this.buttonStandUp.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonStandUp.Location = new System.Drawing.Point(128, 272);
+            this.buttonStandUp.Location = new System.Drawing.Point(128, 278);
             this.buttonStandUp.Name = "buttonStandUp";
             this.buttonStandUp.Size = new System.Drawing.Size(100, 32);
             this.buttonStandUp.TabIndex = 6;
@@ -800,7 +811,7 @@
             // buttonWalking
             // 
             this.buttonWalking.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonWalking.Location = new System.Drawing.Point(128, 234);
+            this.buttonWalking.Location = new System.Drawing.Point(128, 243);
             this.buttonWalking.Name = "buttonWalking";
             this.buttonWalking.Size = new System.Drawing.Size(100, 32);
             this.buttonWalking.TabIndex = 5;
@@ -822,23 +833,37 @@
             this.pictureBox.TabIndex = 1;
             this.pictureBox.TabStop = false;
             // 
-            // buttonDelete
+            // textBoxSearch
             // 
-            this.buttonDelete.BackColor = System.Drawing.Color.Red;
-            this.buttonDelete.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
-            this.buttonDelete.Location = new System.Drawing.Point(290, 120);
-            this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(48, 32);
-            this.buttonDelete.TabIndex = 45;
-            this.buttonDelete.Text = "Dlt";
-            this.buttonDelete.UseVisualStyleBackColor = false;
-            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            this.textBoxSearch.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.textBoxSearch.Location = new System.Drawing.Point(128, 109);
+            this.textBoxSearch.Name = "textBoxSearch";
+            this.textBoxSearch.Size = new System.Drawing.Size(156, 25);
+            this.textBoxSearch.TabIndex = 46;
+            this.textBoxSearch.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // toolStripStatusLabelFolder
+            // buttonAutoSelect
             // 
-            this.toolStripStatusLabelFolder.Name = "toolStripStatusLabelFolder";
-            this.toolStripStatusLabelFolder.Size = new System.Drawing.Size(38, 17);
-            this.toolStripStatusLabelFolder.Text = "URL: ";
+            this.buttonAutoSelect.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonAutoSelect.Location = new System.Drawing.Point(128, 138);
+            this.buttonAutoSelect.Name = "buttonAutoSelect";
+            this.buttonAutoSelect.Size = new System.Drawing.Size(64, 32);
+            this.buttonAutoSelect.TabIndex = 31;
+            this.buttonAutoSelect.Text = "Auto";
+            this.buttonAutoSelect.UseVisualStyleBackColor = true;
+            this.buttonAutoSelect.Click += new System.EventHandler(this.buttonAutoSelect_Click);
+            // 
+            // buttonSearch
+            // 
+            this.buttonSearch.BackColor = System.Drawing.Color.Transparent;
+            this.buttonSearch.Font = new System.Drawing.Font("YaHei Consolas Hybrid", 10F);
+            this.buttonSearch.Location = new System.Drawing.Point(290, 105);
+            this.buttonSearch.Name = "buttonSearch";
+            this.buttonSearch.Size = new System.Drawing.Size(48, 32);
+            this.buttonSearch.TabIndex = 47;
+            this.buttonSearch.Text = "🔍";
+            this.buttonSearch.UseVisualStyleBackColor = false;
+            this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
             // 
             // MainForm
             // 
@@ -926,7 +951,6 @@
         private System.Windows.Forms.Label labelFPS;
         private System.Windows.Forms.Button buttonDispVedio;
         private System.Windows.Forms.NumericUpDown numericUpDownDispDelay;
-        private System.Windows.Forms.Button buttonAutoSelect;
         private System.Windows.Forms.NumericUpDown numericUpDownCoverData;
         private System.Windows.Forms.Button buttonOthersCnt;
         private System.Windows.Forms.Button buttonSittingCnt;
@@ -941,6 +965,9 @@
         private System.Windows.Forms.NumericUpDown numericUpDownStanding;
         private System.Windows.Forms.Button buttonDelete;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelFolder;
+        private System.Windows.Forms.TextBox textBoxSearch;
+        private System.Windows.Forms.Button buttonSearch;
+        private System.Windows.Forms.Button buttonAutoSelect;
     }
 }
 

@@ -435,7 +435,10 @@ namespace Gesture
                     string imgPath = Path.Combine("..", "..", "..", imgUrlSplit[imgUrlSplit.Length - 3], imgUrlSplit[imgUrlSplit.Length - 2], imgUrlSplit[imgUrlSplit.Length - 1]);
                     if (string.IsNullOrWhiteSpace(imgUrlsList.Find(zp => zp == imgPath)))
                     {
-                        File.Delete(imgUrl);
+                        if (File.Exists(imgUrl))
+                        {
+                            File.Delete(imgUrl);
+                        }
                     }
                 }
             }
@@ -641,6 +644,48 @@ namespace Gesture
                 {
                     i++;
                     listBoxData.SelectedIndices.Add(indexCur);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Search and disp the input sample
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonSearch_Click(object sender, EventArgs e)
+        {
+            // Search Data
+            string searchData = textBoxSearch.Text;
+
+            // Define the NumericUpDown Group
+            NumericUpDown[] numericUpDownGroup = new NumericUpDown[]{ numericUpDownStanding, numericUpDownSitting, numericUpDownWalking, numericUpDownStandUp,
+                                                                      numericUpDownSitDown, numericUpDownTurnBack, numericUpDownOthers };
+            EventHandler[] eventHandlerGroup = new EventHandler[] { numericUpDownStanding_ValueChanged,
+                                                                    numericUpDownSitting_ValueChanged,
+                                                                    numericUpDownWalking_ValueChanged,
+                                                                    numericUpDownStandUp_ValueChanged,
+                                                                    numericUpDownSitDown_ValueChanged,
+                                                                    numericUpDownTurnBack_ValueChanged,
+                                                                    numericUpDownOthers_ValueChanged };
+
+            // Loop the NumericUpDown
+            for (int i = 0; i < numericUpDownGroup.Length; i++)
+            {
+                List<List<string>> data = (List<List<string>>)numericUpDownGroup[i].Tag;
+                int findIndex = data.FindIndex(zp => zp[1].ToString().Contains(searchData));
+                if (findIndex >= 0)
+                {
+                    // Store the old value
+                    int oldVal = Convert.ToInt32(numericUpDownGroup[i].Value);
+                    
+                    // Disp search result
+                    numericUpDownGroup[i].Value = findIndex + 1;
+
+                    // Set the old value
+                    numericUpDownGroup[i].ValueChanged -= eventHandlerGroup[i];
+                    numericUpDownGroup[i].Value = oldVal;
+                    numericUpDownGroup[i].ValueChanged += eventHandlerGroup[i];
                 }
             }
         }
