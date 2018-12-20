@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Gesture
 {
@@ -24,7 +25,7 @@ namespace Gesture
         public FileHandle(string[] label_names)
         {
             m_labelnames = label_names;
-            SetFolder("Output//Default//");
+            SetFolder("Output\\All");
         }
 
         public FileHandle(string[] label_names, string filefolder)

@@ -52,13 +52,17 @@ namespace Gesture
         ZpHandle m_zpHandle     = new ZpHandle();                   // Some useful functions
 
         // Data variables
+        int m_invalidDataCnt = 0;               // Count the continue invalid data
         List<double> m_skeletonDataList = new List<double>();
         string[] m_skeletonDataLines;
 
         // Call net
-        TFTensor m_tfTensor;            // Input data
-        TFGraph m_tfGraph;              // tf.Graph
-        TFSession m_tfSess;             // tf.Session
+        static readonly string m_PB_URL = Path.Combine(Application.StartupPath, @"Model\2018-12-19 14-42-50.pb");
+        static readonly int m_INPUT_DATA_NUM = 4500;    // 25(points) x 3(xyz) x 60(frames)
+        List<double> m_tfList = new List<double>();     // To store the data
+        TFTensor m_tfTensor;                            // Input data
+        TFGraph m_tfGraph;                              // tf.Graph
+        TFSession m_tfSess;                             // tf.Session
 
         public MainForm()
         {
@@ -154,6 +158,67 @@ namespace Gesture
                     break;
 				}
 			}
+
+            // -------------------- Add data to m_tfList for calling model -------------------- //
+            if (m_IS_AUTO)
+            {
+                // Count the continue invalid data
+                if (m_skeletonDataList.Count > 0)
+                {
+                    m_invalidDataCnt = 0;
+                    m_tfList.AddRange(m_skeletonDataList);
+                }
+                else
+                {
+                    // If the invalid data occur 10 times, we will cleal the m_tfList
+                    if (++m_invalidDataCnt > 10)
+                    {
+                        m_tfList.Clear();
+                    }
+                }
+
+                // Call the model
+                if (m_tfList.Count == m_INPUT_DATA_NUM)
+                {
+                    // Get the m_tfTensor
+                    float[,] dataArr = new float[1, m_INPUT_DATA_NUM];
+                    for (int i = 0; i < m_tfList.Count; i++)
+                    {
+                        dataArr[0, i] = (float)m_tfList[i];
+                    }
+
+                    // Define data tensor
+                    m_tfTensor = new TFTensor(dataArr);
+
+                    // Call model
+                    TFSession.Runner tfRunner = m_tfSess.GetRunner();
+                    tfRunner.AddInput(m_tfGraph["is_training"][0], false);
+                    tfRunner.AddInput(m_tfGraph["batch_images"][0], m_tfTensor);
+
+                    DateTime time = DateTime.Now;
+                    TFTensor testPct = tfRunner.Run(m_tfGraph["test_pct"][0]);
+                    Trace.WriteLine(string.Format("Time: {0}", (DateTime.Now - time).TotalMilliseconds.ToString()));
+
+                    // Get the label with max value
+                    float[,] runTestPct = (float[,])testPct.GetValue();
+                    float maxValue = 0;
+                    int maxIndex   = -1;
+                    for (int i = 0; i < runTestPct.Length; i++)
+                    {
+                        if (runTestPct[0, i] > maxValue)
+                        {
+                            maxValue = runTestPct[0, i];
+                            maxIndex = i;
+                        }
+                    }
+
+                    // Disp
+                    labelDisp.Text = m_LABELNAMES[maxIndex];
+
+                    // Remove the old (m_tfList.Count/2) data
+                    m_tfList.RemoveRange(0, m_tfList.Count / 2);
+                }
+            }
 
             // -------------------- Write data -------------------- //
             // There are 25 points-3d in skeletonDataList for each user.
@@ -270,6 +335,9 @@ namespace Gesture
                 timerGrab.Enabled    = true;
                 buttonGrab.Text      = "Grab ◼";
                 buttonGrab.BackColor = Color.GreenYellow;
+
+                // Disabled auto button
+                buttonAuto.Enabled = false;
             }
             else
             {
@@ -300,6 +368,9 @@ namespace Gesture
                 timerGrab.Enabled    = false;
                 buttonGrab.Text      = "Grab ▶";
                 buttonGrab.BackColor = Color.FromArgb(0, 255, 255, 255);
+
+                // Enabled auto button
+                buttonAuto.Enabled = true;
             }
         }
 
@@ -346,6 +417,13 @@ namespace Gesture
         {
             if (!m_IS_AUTO)
             {
+                // Load model
+                bool isLoad = LoadPbModel(m_PB_URL);
+                if (!isLoad)
+                {
+                    MessageBox.Show("An error occurred in loading model. ");
+                }
+
                 // Set the global flag
                 m_IS_AUTO            = true;
 
@@ -371,6 +449,43 @@ namespace Gesture
         /// <summary>
         /// Load pb model
         /// </summary>
+        /// <param name="pbFile"></param>
+        /// <returns></returns>
+        private bool LoadPbModel(string pbFile)
+        {
+            try
+            {
+                // Load pb model
+                m_tfGraph = new TFGraph();
+                m_tfGraph.Import(File.ReadAllBytes(pbFile));
+
+                // Initial tf.Session
+                m_tfSess = new TFSession(m_tfGraph);
+            
+                // -------------------- Do a sess.run -------------------- //
+                // The first run need 3000 ms, then only need <10 ms every run, I donot know why?
+                float[,] dataArr = new float[1, m_INPUT_DATA_NUM];
+                TFTensor dataTensor = new TFTensor(dataArr);
+
+                // Call model
+                TFSession.Runner tfRunner = m_tfSess.GetRunner();
+                tfRunner.AddInput(m_tfGraph["is_training"][0], false);
+                tfRunner.AddInput(m_tfGraph["batch_images"][0], dataTensor);
+                TFTensor testPct = tfRunner.Run(m_tfGraph["test_pct"][0]);
+
+                // Return
+                return (true);
+            }
+            catch (System.Exception)
+            {
+                // Return
+                return (false);
+            }
+        }
+
+        /// <summary>
+        /// Load pb model
+        /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void buttonLoadPb_Click(object sender, EventArgs e)
@@ -378,7 +493,7 @@ namespace Gesture
             // Selete a pb model file
             string pbFile = string.Empty;
             OpenFileDialog openFileDialog   = new OpenFileDialog();
-            openFileDialog.RestoreDirectory = true;
+            openFileDialog.InitialDirectory = Path.Combine(Application.StartupPath, @"Model");
             openFileDialog.Title            = "Please select pb model file. ";
             openFileDialog.Filter           = "pb|*.pb";
 ;           if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -391,12 +506,15 @@ namespace Gesture
             }
 
             // Load pb model
-            m_tfGraph = new TFGraph();
-            m_tfGraph.Import(File.ReadAllBytes(pbFile));
-
-            // Initial tf.Session
-            m_tfSess = new TFSession(m_tfGraph);
-            
+            bool isLoad = LoadPbModel(pbFile);
+            if (isLoad)
+            {
+                MessageBox.Show("Successfully load the pb model. ");
+            }
+            else
+            {
+                MessageBox.Show("An error occurred in loading model. ");
+            }
         }
 
         /// <summary>
@@ -406,38 +524,78 @@ namespace Gesture
         /// <param name="e"></param>
         private void buttonTestSample_Click(object sender, EventArgs e)
         {
-            // Read all lines
-            string dataUrl = @"D:\ZpRocProgram\Gesture\Gesture\bin\x64\Debug\Output\All\Labels\Walking\2018-12-13 09-56-38.txt";
-            string[] dataLines = File.ReadAllLines(dataUrl);
-
-            // Loop
-            float[,] dataArr = new float[1, 4500];
-            for (int i = 0; i < dataLines.Length; i++)
+            // -------------------- Select a txt file and a md file -------------------- //
+            // Selete a txt or md file
+            string selectFile = string.Empty;
+            OpenFileDialog openFileDialog   = new OpenFileDialog();
+            openFileDialog.InitialDirectory = Path.Combine(Application.StartupPath, @"Output\All\Labels\");
+            openFileDialog.Title            = "Please select a txt or md file. ";
+            openFileDialog.Filter           = "data|*.txt;*.md";
+;           if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                if (!string.IsNullOrWhiteSpace(dataLines[i]))
-                {
-                    dataArr[0, i] = (float)Convert.ToDouble(dataLines[i]);
-                }
+                selectFile = openFileDialog.FileName;
+            }
+            else
+            {
+                return;
             }
 
-            // Define data tensor
-            TFTensor dataTensor = new TFTensor(dataArr);
+            // Get the url of txt file and md file
+            string txtFile = selectFile.Split('.')[0] + ".txt";
+            string mdFile  = selectFile.Split('.')[0] + ".md";
 
-            // Call model
-            TFSession.Runner tfRunner = m_tfSess.GetRunner();
-            tfRunner.AddInput(m_tfGraph["is_training"][0], false);
-            tfRunner.AddInput(m_tfGraph["batch_images"][0], dataTensor);
+            // -------------------- txt file for calling model -------------------- //
+            try
+            {
+                // Read all lines
+                string[] dataLines = File.ReadAllLines(txtFile);
 
-            DateTime time = DateTime.Now;
-            TFTensor testPct = tfRunner.Run(m_tfGraph["test_pct"][0]);
-            Trace.WriteLine(string.Format("Time: {0}", (DateTime.Now - time).TotalMilliseconds.ToString()));
+                // Loop
+                float[,] dataArr = new float[1, m_INPUT_DATA_NUM];
+                for (int i = 0; i < dataLines.Length; i++)
+                {
+                    if (!string.IsNullOrWhiteSpace(dataLines[i]))
+                    {
+                        dataArr[0, i] = (float)Convert.ToDouble(dataLines[i]);
+                    }
+                }
+                
+                // Define data tensor
+                m_tfTensor = new TFTensor(dataArr);
 
-            // Get the label with max value
-            var v = (float[,])testPct.GetValue();
+                // Call model
+                TFSession.Runner tfRunner = m_tfSess.GetRunner();
+                tfRunner.AddInput(m_tfGraph["is_training"][0], false);
+                tfRunner.AddInput(m_tfGraph["batch_images"][0], m_tfTensor);
 
+                DateTime time = DateTime.Now;
+                TFTensor testPct = tfRunner.Run(m_tfGraph["test_pct"][0]);
+                Trace.WriteLine(string.Format("Time: {0}", (DateTime.Now - time).TotalMilliseconds.ToString()));
 
-            // Disp
+                // Get the label with max value
+                float[,] runTestPct = (float[,])testPct.GetValue();
+                float maxValue = 0;
+                int maxIndex   = -1;
+                for (int i = 0; i < runTestPct.Length; i++)
+                {
+                    if (runTestPct[0, i] > maxValue)
+                    {
+                        maxValue = runTestPct[0, i];
+                        maxIndex = i;
+                    }
+                }
 
+                // Disp
+                labelDisp.Text = m_LABELNAMES[maxIndex];
+            }
+            catch (System.Exception)
+            {
+                MessageBox.Show("An error occurred in the calling model. ");
+                return;
+            }
+            
+            // -------------------- md file for disping vedio -------------------- //
+            m_zpHandle.DispSample(mdFile, m_fileHandle, ref pictureBox, Convert.ToInt32(numericUpDownDispDelay.Value));
         }
 
         // ---------------------------------------------------------------------------------------------------- //
@@ -1086,7 +1244,18 @@ namespace Gesture
         /// <param name="e"></param>
         private void numericUpDownStanding_ValueChanged(object sender, EventArgs e)
         {
-            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), m_fileHandle, ref pictureBox);
+            // Get md file
+            NumericUpDown numericUpDown = (NumericUpDown)sender;
+            List<List<string>> fileUrls = (List<List<string>>)numericUpDown.Tag;
+            int fileIndex = Convert.ToInt32(numericUpDown.Value) - 1;
+            if (fileUrls == null || fileIndex < 0 || fileIndex > fileUrls.Count - 1 )
+            {
+                return;
+            }
+            string mdFile = fileUrls[fileIndex][1];
+
+            // Disp
+            m_zpHandle.DispSample(mdFile, m_fileHandle, ref pictureBox, Convert.ToInt32(numericUpDownDispDelay.Value));
         }
 
         /// <summary>
@@ -1096,7 +1265,18 @@ namespace Gesture
         /// <param name="e"></param>
         private void numericUpDownSitting_ValueChanged(object sender, EventArgs e)
         {
-            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), m_fileHandle, ref pictureBox);
+            // Get md file
+            NumericUpDown numericUpDown = (NumericUpDown)sender;
+            List<List<string>> fileUrls = (List<List<string>>)numericUpDown.Tag;
+            int fileIndex = Convert.ToInt32(numericUpDown.Value) - 1;
+            if (fileUrls == null || fileIndex < 0 || fileIndex > fileUrls.Count - 1 )
+            {
+                return;
+            }
+            string mdFile = fileUrls[fileIndex][1];
+
+            // Disp
+            m_zpHandle.DispSample(mdFile, m_fileHandle, ref pictureBox, Convert.ToInt32(numericUpDownDispDelay.Value));
         }
 
         /// <summary>
@@ -1106,7 +1286,18 @@ namespace Gesture
         /// <param name="e"></param>
         private void numericUpDownWalking_ValueChanged(object sender, EventArgs e)
         {
-            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), m_fileHandle, ref pictureBox);
+            // Get md file
+            NumericUpDown numericUpDown = (NumericUpDown)sender;
+            List<List<string>> fileUrls = (List<List<string>>)numericUpDown.Tag;
+            int fileIndex = Convert.ToInt32(numericUpDown.Value) - 1;
+            if (fileUrls == null || fileIndex < 0 || fileIndex > fileUrls.Count - 1 )
+            {
+                return;
+            }
+            string mdFile = fileUrls[fileIndex][1];
+
+            // Disp
+            m_zpHandle.DispSample(mdFile, m_fileHandle, ref pictureBox, Convert.ToInt32(numericUpDownDispDelay.Value));
         }
 
         /// <summary>
@@ -1116,7 +1307,18 @@ namespace Gesture
         /// <param name="e"></param>
         private void numericUpDownStandUp_ValueChanged(object sender, EventArgs e)
         {
-            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), m_fileHandle, ref pictureBox);
+            // Get md file
+            NumericUpDown numericUpDown = (NumericUpDown)sender;
+            List<List<string>> fileUrls = (List<List<string>>)numericUpDown.Tag;
+            int fileIndex = Convert.ToInt32(numericUpDown.Value) - 1;
+            if (fileUrls == null || fileIndex < 0 || fileIndex > fileUrls.Count - 1 )
+            {
+                return;
+            }
+            string mdFile = fileUrls[fileIndex][1];
+
+            // Disp
+            m_zpHandle.DispSample(mdFile, m_fileHandle, ref pictureBox, Convert.ToInt32(numericUpDownDispDelay.Value));
         }
 
         /// <summary>
@@ -1126,7 +1328,18 @@ namespace Gesture
         /// <param name="e"></param>
         private void numericUpDownSitDown_ValueChanged(object sender, EventArgs e)
         {
-            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), m_fileHandle, ref pictureBox);
+            // Get md file
+            NumericUpDown numericUpDown = (NumericUpDown)sender;
+            List<List<string>> fileUrls = (List<List<string>>)numericUpDown.Tag;
+            int fileIndex = Convert.ToInt32(numericUpDown.Value) - 1;
+            if (fileUrls == null || fileIndex < 0 || fileIndex > fileUrls.Count - 1 )
+            {
+                return;
+            }
+            string mdFile = fileUrls[fileIndex][1];
+
+            // Disp
+            m_zpHandle.DispSample(mdFile, m_fileHandle, ref pictureBox, Convert.ToInt32(numericUpDownDispDelay.Value));
         }
 
         /// <summary>
@@ -1136,7 +1349,18 @@ namespace Gesture
         /// <param name="e"></param>
         private void numericUpDownTurnBack_ValueChanged(object sender, EventArgs e)
         {
-            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), m_fileHandle, ref pictureBox);
+            // Get md file
+            NumericUpDown numericUpDown = (NumericUpDown)sender;
+            List<List<string>> fileUrls = (List<List<string>>)numericUpDown.Tag;
+            int fileIndex = Convert.ToInt32(numericUpDown.Value) - 1;
+            if (fileUrls == null || fileIndex < 0 || fileIndex > fileUrls.Count - 1 )
+            {
+                return;
+            }
+            string mdFile = fileUrls[fileIndex][1];
+
+            // Disp
+            m_zpHandle.DispSample(mdFile, m_fileHandle, ref pictureBox, Convert.ToInt32(numericUpDownDispDelay.Value));
         }
 
         /// <summary>
@@ -1146,7 +1370,18 @@ namespace Gesture
         /// <param name="e"></param>
         private void numericUpDownOthers_ValueChanged(object sender, EventArgs e)
         {
-            m_zpHandle.DispSample((NumericUpDown)sender, Convert.ToInt32(numericUpDownDispDelay.Value), m_fileHandle, ref pictureBox);
+            // Get md file
+            NumericUpDown numericUpDown = (NumericUpDown)sender;
+            List<List<string>> fileUrls = (List<List<string>>)numericUpDown.Tag;
+            int fileIndex = Convert.ToInt32(numericUpDown.Value) - 1;
+            if (fileUrls == null || fileIndex < 0 || fileIndex > fileUrls.Count - 1 )
+            {
+                return;
+            }
+            string mdFile = fileUrls[fileIndex][1];
+
+            // Disp
+            m_zpHandle.DispSample(mdFile, m_fileHandle, ref pictureBox, Convert.ToInt32(numericUpDownDispDelay.Value));
         }
 
         // ---------------------------------------------------------------------------------------------------- //

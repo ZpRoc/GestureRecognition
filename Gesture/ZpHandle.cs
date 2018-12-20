@@ -182,19 +182,12 @@ namespace Gesture
         /// <summary>
         /// Disp sample
         /// </summary>
-        /// <param name="numericUpDown"></param>
+        /// <param name="mdFile"></param>
+        /// <param name="fileHandle"></param>
         /// <param name="pictureBox"></param>
-        public void DispSample(NumericUpDown numericUpDown, int dispDelay, FileHandle fileHandle, ref PictureBox pictureBox)
+        /// <param name="dispDelay"></param>
+        public void DispSample(string mdFile, FileHandle fileHandle, ref PictureBox pictureBox, int dispDelay)
         {
-            // Get md file
-            List<List<string>> fileUrls = (List<List<string>>)numericUpDown.Tag;
-            int fileIndex = Convert.ToInt32(numericUpDown.Value) - 1;
-            if (fileUrls == null || fileIndex < 0 || fileIndex > fileUrls.Count - 1 )
-            {
-                return;
-            }
-            string mdFile = fileUrls[fileIndex][1];
-
             // Read md file
             string[] readLines;
             if (File.Exists(mdFile))
