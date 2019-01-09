@@ -91,7 +91,7 @@
 ### 3-1 Interface
 
 <div align = center>
-    <img src = "tmp/Interface1.png", width = "60%"/>
+    <img src = "img/Interface1.png", width = "60%"/>
 </div>
 
 -   ①: Display the color image and the skeleton data with red square points.
@@ -110,7 +110,7 @@
 -   ⑥: Output window, not used yet.
 
 <div align = center>
-    <img src = "tmp/Interface2.png", width = "60%"/>
+    <img src = "img/Interface2.png", width = "60%"/>
 </div>
 
 -   ①: Display the skeleton data index. The small flag indicates that the data under the index is valid. 
