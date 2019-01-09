@@ -25,13 +25,13 @@ namespace Gesture
         // ---------------------------------------------------------------------------------------------------- //
 
         /// <summary>
-        /// Draw a circle in the Bitmap
+        /// Draw a square in the Bitmap
         /// </summary>
         /// <param name="x0"></param>
         /// <param name="y0"></param>
         /// <param name="r0"></param>
         /// <param name="color"></param>
-        public void SetCircle(int x0, int y0, int r0, Color color)
+        public void SetSquare(int x0, int y0, int r0, Color color)
         {
             // Limit the coordinate
             int x_s = x0 - r0 > 0 ? x0 - r0 : 0;

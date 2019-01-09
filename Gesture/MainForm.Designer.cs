@@ -760,11 +760,11 @@
             // labelCombineData
             // 
             this.labelCombineData.AutoSize = true;
-            this.labelCombineData.Location = new System.Drawing.Point(112, 49);
+            this.labelCombineData.Location = new System.Drawing.Point(120, 49);
             this.labelCombineData.Name = "labelCombineData";
-            this.labelCombineData.Size = new System.Drawing.Size(129, 19);
+            this.labelCombineData.Size = new System.Drawing.Size(121, 19);
             this.labelCombineData.TabIndex = 14;
-            this.labelCombineData.Text = "Combine datas: ";
+            this.labelCombineData.Text = "Combine data: ";
             this.labelCombineData.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // listBoxData

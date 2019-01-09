@@ -40,7 +40,7 @@ namespace Gesture
         bool m_IS_WRITE_DATA = false;       // Write skeleton data?
         bool m_IS_AUTO       = false;       // Recognize the gesture automatically
 
-        // Running time
+        // Running time: Record the running time of each frame, which cannot exceed (1000.0 / FPS)
         static readonly int m_MAX_TIME_RECORD = 100;
         List<double> m_runningTimeList = new List<double>();
 
@@ -52,9 +52,9 @@ namespace Gesture
         ZpHandle m_zpHandle     = new ZpHandle();                   // Some useful functions
 
         // Data variables
-        int m_invalidDataCnt = 0;               // Count the continue invalid data
-        List<double> m_skeletonDataList = new List<double>();
-        string[] m_skeletonDataLines;
+        List<double> m_skeletonDataList = new List<double>();       // Skeleton data per frame, assign value from _skeletonData
+        int m_invalidDataCnt = 0;                                   // Count the continue invalid data
+        string[] m_skeletonDataLines;                               // Store all the skeleton data by reading a group txt files
 
         // Call net
         static readonly string m_PB_URL = Path.Combine(Application.StartupPath, @"Model\2018-12-19 14-42-50.pb");
@@ -81,8 +81,10 @@ namespace Gesture
 		}
 
         // ---------------------------------------------------------------------------------------------------- //
-        // ------------------------------- Important form control events: Grab -------------------------------- //
+        // ----------------------------------------- Important events ----------------------------------------- //
         // ---------------------------------------------------------------------------------------------------- //
+
+        #region The events of timerGrab, buttonGrab, buttonWrite, buttonAuto
 
         /// <summary>
         /// timerGrab, doing everything
@@ -128,7 +130,7 @@ namespace Gesture
                 return;
 			}
 
-            // -------------------- Get data -------------------- //
+            // -------------------- Get skeleton data -------------------- //
             // Clear
             m_skeletonDataList.Clear();
 
@@ -145,7 +147,7 @@ namespace Gesture
 					foreach (var joint in skeleton.Joints)
 					{
                         // Update the _bitmap
-                        _bitmap.SetCircle((int)(joint.Proj.X * _bitmap.Width), (int)(joint.Proj.Y * _bitmap.Height),
+                        _bitmap.SetSquare((int)(joint.Proj.X * _bitmap.Width), (int)(joint.Proj.Y * _bitmap.Height),
 							              jointSize, Color.FromArgb(255, 255, 0, 0));
 
                         // Add skeleton data
@@ -160,7 +162,7 @@ namespace Gesture
 			}
 
             // -------------------- Add data to m_tfList for calling model -------------------- //
-            if (m_IS_AUTO)
+            if (m_IS_AUTO)      // Auto mode: recognize the gesture automatically
             {
                 // Count the continue invalid data
                 if (m_skeletonDataList.Count > 0)
@@ -180,17 +182,18 @@ namespace Gesture
                 // Call the model
                 if (m_tfList.Count == m_INPUT_DATA_NUM)
                 {
-                    // Get the m_tfTensor
+                    // m_tfList (List) --> dataArr (float array)
                     float[,] dataArr = new float[1, m_INPUT_DATA_NUM];
                     for (int i = 0; i < m_tfList.Count; i++)
                     {
                         dataArr[0, i] = (float)m_tfList[i];
                     }
 
-                    // Define data tensor
+                    // Get the m_tfTensor
                     m_tfTensor = new TFTensor(dataArr);
 
                     // Call model
+                    // Model input: is_training = false, batch_images = skeleton data
                     TFSession.Runner tfRunner = m_tfSess.GetRunner();
                     tfRunner.AddInput(m_tfGraph["is_training"][0], false);
                     tfRunner.AddInput(m_tfGraph["batch_images"][0], m_tfTensor);
@@ -214,6 +217,7 @@ namespace Gesture
 
                     // Disp
                     labelDisp.Text = m_LABELNAMES[maxIndex];
+                    labelDisp.Refresh();
 
                     // Remove the old (m_tfList.Count/2) data
                     m_tfList.RemoveRange(0, m_tfList.Count / 2);
@@ -234,10 +238,10 @@ namespace Gesture
             m_runningTimeList.Add((DateTime.Now - startTime).TotalMilliseconds);
             m_zpHandle.DispRunningTime(m_frameCounter, m_runningTimeList, m_MAX_TIME_RECORD, ref statusStripGrab);
 
-            // Disp skeleton data
+            // Disp skeleton data in textBox
             m_zpHandle.DispSkeletonData(m_skeletonDataList, ref textBoxSkeletonData);
 
-            // -------------------- Refresh main from -------------------- //
+            // Refresh pictureBox
             pictureBox.Image = _bitmap.Bitmap;
             pictureBox.Refresh();
         }
@@ -251,7 +255,7 @@ namespace Gesture
         {
             if (!m_IS_GRAB)
             {
-                // --------------------- Initialize nuitrack ---------------------- //
+                // -------------------- Initialize nuitrack -------------------- //
 			    try
 			    {
 				    Nuitrack.Init("");
@@ -264,7 +268,7 @@ namespace Gesture
                     return;
 			    }
 
-                // ------------------------ Create modules ------------------------ //
+                // -------------------- Create modules -------------------- //
 			    try
 			    {
 				    // Create and setup all required modules
@@ -286,7 +290,7 @@ namespace Gesture
                     return;
 			    }
 
-                // -------------------------- Add events -------------------------- //
+                // -------------------- Add events -------------------- //
 			    // Add event handlers for all modules
 			    _depthSensor.OnUpdateEvent             += onDepthSensorUpdate;
 			    _colorSensor.OnUpdateEvent             += onColorSensorUpdate;
@@ -298,7 +302,7 @@ namespace Gesture
 			    // Add an event handler for the IssueUpdate event 
 			    Nuitrack.onIssueUpdateEvent += onIssueDataUpdate;
 
-                // ------------------------ Bitmap object ------------------------- //
+                // -------------------- Bitmap object -------------------- //
 			    // Create and configure the Bitmap object according to the depth sensor output mode
 			    OutputMode mode      = _depthSensor.GetOutputMode();
 			    OutputMode colorMode = _colorSensor.GetOutputMode();
@@ -315,7 +319,7 @@ namespace Gesture
 					    _bitmap.SetPixel(x, y, Color.FromKnownColor(KnownColor.Aqua));
 			    }
 
-                // ------------------------- Run Nuitrack ------------------------- //
+                // -------------------- Run Nuitrack -------------------- //
 			    // Run Nuitrack. This starts sensor data processing.
 			    try
 			    {
@@ -329,7 +333,7 @@ namespace Gesture
                     return;
 			    }
 
-                // ------------------------- Update global variables ------------------------- //
+                // -------------------- Update global variables -------------------- //
                 m_IS_GRAB            = true;
                 m_frameCounter       = 0;
                 timerGrab.Enabled    = true;
@@ -341,7 +345,7 @@ namespace Gesture
             }
             else
             {
-                // ------------------------- Release Nuitrack and remove all modules ------------------------- //
+                // -------------------- Release Nuitrack and remove all modules -------------------- //
 			    try
 			    {
 				    Nuitrack.onIssueUpdateEvent -= onIssueDataUpdate;
@@ -362,8 +366,8 @@ namespace Gesture
 				    Trace.WriteLine(output);
                     return;
 			    }
-                
-                // ------------------------- Update global variables ------------------------- //
+
+                // -------------------- Update global variables -------------------- //
                 m_IS_GRAB            = false;
                 timerGrab.Enabled    = false;
                 buttonGrab.Text      = "Grab ▶";
@@ -442,14 +446,18 @@ namespace Gesture
             }
         }
 
+        #endregion
+
         // ---------------------------------------------------------------------------------------------------- //
-        // ------------------------------- Important form control events: Label ------------------------------- //
+        // -------------------------------------- Load and test pb model -------------------------------------- //
         // ---------------------------------------------------------------------------------------------------- //
 
+        #region Load and test pb model
+
         /// <summary>
-        /// Load pb model
+        /// Load a pb model
         /// </summary>
-        /// <param name="pbFile"></param>
+        /// <param name="pbFile">The url of pb model</param>
         /// <returns></returns>
         private bool LoadPbModel(string pbFile)
         {
@@ -484,7 +492,7 @@ namespace Gesture
         }
 
         /// <summary>
-        /// Load pb model
+        /// Load a pb model
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -518,7 +526,7 @@ namespace Gesture
         }
 
         /// <summary>
-        /// Test sample using pb model
+        /// Test a sample using the loaded model
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -530,7 +538,7 @@ namespace Gesture
             OpenFileDialog openFileDialog   = new OpenFileDialog();
             openFileDialog.InitialDirectory = Path.Combine(Application.StartupPath, @"Output\All\Labels\");
             openFileDialog.Title            = "Please select a txt or md file. ";
-            openFileDialog.Filter           = "data|*.txt;*.md";
+            openFileDialog.Filter           = "data(txt/md)|*.txt;*.md";
 ;           if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 selectFile = openFileDialog.FileName;
@@ -545,12 +553,13 @@ namespace Gesture
             string mdFile  = selectFile.Split('.')[0] + ".md";
 
             // -------------------- txt file for calling model -------------------- //
+            // This part of the code is similar to the code in function timerGrab_Tick.
             try
             {
                 // Read all lines
                 string[] dataLines = File.ReadAllLines(txtFile);
 
-                // Loop
+                // Loop, get the skeleton data array
                 float[,] dataArr = new float[1, m_INPUT_DATA_NUM];
                 for (int i = 0; i < dataLines.Length; i++)
                 {
@@ -560,10 +569,11 @@ namespace Gesture
                     }
                 }
                 
-                // Define data tensor
+                // Get the m_tfTensor
                 m_tfTensor = new TFTensor(dataArr);
 
                 // Call model
+                // Model input: is_training = false, batch_images = skeleton data
                 TFSession.Runner tfRunner = m_tfSess.GetRunner();
                 tfRunner.AddInput(m_tfGraph["is_training"][0], false);
                 tfRunner.AddInput(m_tfGraph["batch_images"][0], m_tfTensor);
@@ -587,6 +597,7 @@ namespace Gesture
 
                 // Disp
                 labelDisp.Text = m_LABELNAMES[maxIndex];
+                labelDisp.Refresh();
             }
             catch (System.Exception)
             {
@@ -598,9 +609,13 @@ namespace Gesture
             m_zpHandle.DispSample(mdFile, m_fileHandle, ref pictureBox, Convert.ToInt32(numericUpDownDispDelay.Value));
         }
 
+        #endregion
+
         // ---------------------------------------------------------------------------------------------------- //
-        // ------------------------------- Important form control events: Label ------------------------------- //
+        // ------------------------------------------ Label Control ------------------------------------------- //
         // ---------------------------------------------------------------------------------------------------- //
+
+        #region Label control
 
         /// <summary>
         /// Load skeleton data
@@ -614,6 +629,7 @@ namespace Gesture
             OpenFileDialog openFileDialog   = new OpenFileDialog();
             openFileDialog.InitialDirectory = Path.Combine(Application.StartupPath, "Output");
             openFileDialog.RestoreDirectory = true;
+            openFileDialog.Filter           = "data(txt)|*.txt";
             openFileDialog.Title            = "Please select the data file. ";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -658,7 +674,7 @@ namespace Gesture
         }
 
         /// <summary>
-        /// Select data
+        /// Select data and disp the corresponding image
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -706,7 +722,7 @@ namespace Gesture
         }
 
         /// <summary>
-        /// Auto select the next CombineData
+        /// Auto select the next batch images, batchSize = CombineData
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -838,7 +854,8 @@ namespace Gesture
         }
 
         /// <summary>
-        /// Delete useless images
+        /// Delete useless images after labeling
+        /// The function is not important, just to reduce the memory footprint of the image 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -929,8 +946,10 @@ namespace Gesture
             // Unused images have been deleted.
             MessageBox.Show("Unused images have been deleted. ");
         }
+        
+        #endregion
 
-        // ---------- Write label data
+        #region Write label data
 
         /// <summary>
         /// Write Stand label data
@@ -1135,7 +1154,9 @@ namespace Gesture
             }
         }
 
-        // ---------- Open label folder
+        #endregion
+
+        #region Open label folder
 
         /// <summary>
         /// Open Stand label folder
@@ -1235,7 +1256,9 @@ namespace Gesture
             }
         }
 
-        // ---------- Disp label sample
+        #endregion
+
+        #region Disp label sample
 
         /// <summary>
         /// Disp Stand sample
@@ -1384,15 +1407,19 @@ namespace Gesture
             m_zpHandle.DispSample(mdFile, m_fileHandle, ref pictureBox, Convert.ToInt32(numericUpDownDispDelay.Value));
         }
 
+        #endregion
+
         // ---------------------------------------------------------------------------------------------------- //
         // --------------------------------------- Form control events ---------------------------------------- //
         // ---------------------------------------------------------------------------------------------------- //
 
-		/// <summary>
-        /// Switch visualization mode on a mouse click
+        #region Form control events
+
+        /// <summary>
+        /// Switch visualization mode on a mouse click.
         /// </summary>
         /// <param name="args"></param>
-		protected override void OnClick(EventArgs args)
+        protected override void OnClick(EventArgs args)
 		{
 			base.OnClick(args);
 
@@ -1400,12 +1427,12 @@ namespace Gesture
 		}
 
         /// <summary>
-        /// Event handler for the FormClosing event
+        /// Event handler for the FormClosing event.
+        /// Release Nuitrack and remove all modules.
         /// </summary>
         /// <param name="e"></param>
         protected override void OnFormClosing(FormClosingEventArgs e)
 		{
-			// Release Nuitrack and remove all modules
 			try
 			{
                 if (m_IS_GRAB)
@@ -1432,24 +1459,29 @@ namespace Gesture
 		}
 
         /// <summary>
-        /// Set the timer interval
+        /// Set the FPS.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void numericUpDownFPS_ValueChanged(object sender, EventArgs e)
         {
+            // Timer grab interval = 1000.0 / FPS
             timerGrab.Interval = Convert.ToInt32(1000.0 / (double)numericUpDownFPS.Value);
         }
+
+        #endregion
 
         // ---------------------------------------------------------------------------------------------------- //
         // --------------------------------------- Updata camera datas ---------------------------------------- //
         // ---------------------------------------------------------------------------------------------------- //
 
+        #region Updata camera datas
+
         /// <summary>
         /// Event handler for the IssueDataUpdate event: Update _issuesData
         /// </summary>
         /// <param name="issuesData"></param>
-		private void onIssueDataUpdate(IssuesData issuesData)
+        private void onIssueDataUpdate(IssuesData issuesData)
 		{
 			_issuesData = issuesData;
 		}
@@ -1516,15 +1548,19 @@ namespace Gesture
 			}
 		}
 
+        #endregion
+
         // ---------------------------------------------------------------------------------------------------- //
         // ---------------------------------------- NUITRICK handlers ----------------------------------------- //
         // ---------------------------------------------------------------------------------------------------- //
 
-		/// <summary>
+        #region NUITRICK handlers
+
+        /// <summary>
         /// Event handler for the UserTrackerUpdate event
         /// </summary>
         /// <param name="userFrame"></param>
-		private void onUserTrackerUpdate(UserFrame userFrame)
+        private void onUserTrackerUpdate(UserFrame userFrame)
 		{
             // Only for depth model
 			if (_visualizeColorImage)
@@ -1631,6 +1667,7 @@ namespace Gesture
 				Trace.WriteLine(string.Format("Recognized {0} from user {1}", gesture.Type.ToString(), gesture.UserID));
 		}
 
-        
+        #endregion
+
     }
 }

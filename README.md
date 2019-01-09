@@ -84,13 +84,51 @@
 
 
 
-## 3 Capture
+## 3 Demo
 
+>   All codes are based on `.NET Framework 4.6.1` using `Visual Studio`.
 
+### 3-1 Interface
 
+<div align = center>
+    <img src = "tmp/Interface1.png", width = "60%"/>
+</div>
 
+-   ①: Display the color image and the skeleton data with red square points.
+-   ②: Display the judged gesture: `Standing`, `Sitting`, `Walking`, `StandUp`, `SitDown`, `TurnBack`.
+-   ③: Display the skeleton data, 25 points (XYZ) per frame.
+-   ④: The main control
+    -   `Grab`: Start or Stop the camera grab.
+    -   `Write`: Enabled or disabled write skeleton data.
+    -   `Auto`: Enabled or disabled recognize the gesture automatically.
+    -   `FPS`: Frame per second, also timer grab interval equals `1000.0 / FPS`.
+    -   `W`: The width of image. 
+    -   `H`: The height of image. 
+-   ⑤: Load and test `.pb` model
+    -   `Load`: Load a `.pb` model.
+    -   `Test`: Test a sample using the loaded model.
+-   ⑥: Output window, not used yet.
 
+<div align = center>
+    <img src = "tmp/Interface2.png", width = "60%"/>
+</div>
 
+-   ①: Display the skeleton data index. The small flag indicates that the data under the index is valid. 
+-   ②: Load and config data.
+    -   `Load`: Select a `.txt` file, see `3-2` for more instructions.
+    -   Combine data: 
+        -   `1st number` indicates that the data of each 60 frames is combined into one sample.
+        -   `2nd number` indicates that overlaps the data of 30 frames between every two samples.
+-   ③: Search and select data.
+    -   `Search`: 
+    -   `Auto`: 
+    -   `▶`:
+    -   `Delay`: 
+    -   `Dlt`: 
+-   ④: Labeling, 3 buttons per label.
+    -   `1st button`: 
+    -   `2nd button`: 
+    -   `3rd button`: 
 
 
 
