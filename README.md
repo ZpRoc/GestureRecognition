@@ -12,7 +12,11 @@
     3.  [Examples](#2-3-Examples)
 3.  [Demo](#3-Demo)
     1.  [Interface](#3-1-Interface)
-    2.  
+    2.  [Data](#3-2-Data)
+        1.  [Output Folder Tree](#3-2-1-Output-Folder-Tree)
+        2.  [Write data](#3-2-2-Write-data)
+        3.  [Labeling](#3-2-3-Labeling)
+        4.  [Display Sample](#3-2-4-Display-Sample)
 
 
 
@@ -105,7 +109,7 @@
     <img src = "img/Interface1.png", width = "60%"/>
 </div>
 
--   ①: Display the color image and the skeleton data with red square points.
+-   ①: Display the color image and the skeleton data with red square dots.
 -   ②: Display the judged gesture: `Standing`, `Sitting`, `Walking`, `StandUp`, `SitDown`, `TurnBack`.
 -   ③: Display the skeleton data, 25 points (XYZ) per frame.
 -   ④: The main control
@@ -124,40 +128,76 @@
     <img src = "img/Interface2.png", width = "60%"/>
 </div>
 
--   ①: Display the skeleton data index. The small flag indicates that the data under the index is valid. 
--   ②: Load and config data.
+-   ⑦: Display the skeleton data index. The small flag indicates that the data under the index is valid. 
+-   ⑧: Load and config data.
     -   `Load`: Select a `.txt` file, see `3-2` for more instructions.
     -   Combine data: 
         -   `1st number` indicates that the data of each 60 frames is combined into one sample.
         -   `2nd number` indicates that overlaps the data of 30 frames between every two samples.
--   ③: Search and select data.
+-   ⑨: Search and select data.
     -   `Search`: Search and display the images of the sample
     -   `Auto`: Auto select the next batch images, `batchSize = CombineData`.
     -   `▶`: Display the select data and images.
     -   `Delay`: Display image delay time.
     -   `Dlt`: Delete useless images after labeling.
--   ④: Labeling, 3 buttons per label.
+-   ⑩: Labeling, 3 buttons per label.
     -   `1st button`: Write label data. 
     -   `2nd button`: Open label folder.
     -   `3rd button`: Display label sample.
 
-### 3-2 Data Format
+### 3-2 Data
 
 #### 3-2-1 Output Folder Tree
 
 ```mermaid
 graph TD
 	A(Application.StartupPath)
-	B1(Output: Save the skeleton data)
-	B2(Model: Save the pb model)
-	C0(All: Save the skeleton data, only txt and md files)
-	Cx(yyyy-MM-dd HH-mm-ss: Save the skeleton data including images)
+	B1(Model: Save the pb model)
+	B2(Output: Save the skeleton data)
+	C0(Model Files: yyyy-MM-dd HH-mm-ss.pb)
+	D0(All: Save the skeleton data)
+	Dx(yyyy-MM-dd HH-mm-ss: Save the skeleton data)
+	E1(Images: Images for each label)
+	E2(Labels: Txt and md files for each label)
+	E3(Data Infos: Data.txt)
 	
 	A --> B1
 	A --> B2
 	B1 --> C0
-	B1 --> Cx
+	B2 --> D0
+	B2 --> Dx
+	D0 --> E1
+	D0 --> E2
+	D0 --> E3
+	Dx --> E1
+	Dx --> E2
+	Dx --> E3
 ```
+
+#### 3-2-2 Write data
+
+-   When the `Write` button is clicked, the folder will be created under the `Output` folder with the format of current time `yyyy-MM-dd HH-mm-ss` as the folder name. For example, creating a folder named `2019-01-10 10-40-54`. 
+-   Further, in the `2019-01-10 10-40-54` folder, two folder named `Images` and `Labels` are created and a txt file named `Data` is generated. 
+    -   `Images`: The color image with the joint position of the body using square red dots. 
+    -   `Labels`: Txt and md files for each label.
+    -   `Data.txt`: The information of the skeleton data. Normally, only the word `Skeleton data (X, Y, Z) * 25 points. `. 
+
+#### 3-2-3 Labeling
+
+-   After writing the data, switch to interface 2, click the `Load Data` button, and select the `data.txt` file under the selected folder.
+-   In the interface ⑦, all the skeleton data lists under the selected folder are displayed. The small flag indicates that the data under the index is valid. 
+-   Next, you need to select enough continuous data manually, or use the `Auto` button to let the program  select the data automatically. 
+-   While you select the data, Interface ① will display the images, determine the current gesture manually based on the image information, and click the corresponding `1st button` in interface ⑩. after that, a sample will be automatically saved.
+
+#### 3-2-4 Display Sample
+
+-   Same as `labeling`, click the `Load Data` button, and select the `data.txt` file under the selected folder.
+-   Click the corresponding `2nd button` in interface ⑩, the program will automatically open the save path of the selected label's sample.
+-   Click the corresponding `3rd button` in interface ⑩, the program will automatically display the images of the selected sample in interface ①.
+
+
+
+
 
 
 
