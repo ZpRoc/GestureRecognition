@@ -229,21 +229,18 @@ graph TD
 A DNN(Deep Neural Network) architecture. (Multilayer perceptron 多层感知器)
 
 ```python
-def dnn_5(inputs, num_classes=6, is_training=True, dropout_keep_prob=0.8, 
-          reuse=tf.AUTO_REUSE, scope='dnn_5'):
+def dnn_5(inputs, num_classes=6, is_training=True, dropout_keep_prob=0.8, reuse=tf.AUTO_REUSE, scope='dnn_5'):
     ''' A DNN architecture with 4 hidden layers. 
 
         input --> (hidden layer) x 4 --> output
 
         hidden_layer_notes = [4096, 1024, 256, 64]
-        1 x 4500 --> 1 x 4096 --> 1 x 1024 --> 1 x 256 
-        		 --> 1 x 64 --> 1 x num_output
+        1 x 4500 --> 1 x 4096 --> 1 x 1024 --> 1 x 256 --> 1 x 64 --> 1 x num_output
 
         Args:
             inputs           : The input data sets whose shape likes [1 x 4500]. 
             num_classes      : The number of output classes. 
-            is_training      : Is training? 
-            				   if yes, it will ignore dropout_keep_prob.  
+            is_training      : Is training, if yes, it will ignore dropout_keep_prob.  
             dropout_keep_prob: The value of dropout parameter. 
             reuse            : 
             scope            :
@@ -262,35 +259,30 @@ def dnn_5(inputs, num_classes=6, is_training=True, dropout_keep_prob=0.8,
         # 1 x 4500 --> 1 x 4096
         with tf.variable_scope('hidden1'):
             net = slim.fully_connected(inputs, hidden_layer_notes[0], scope='fc')
-            net = slim.dropout(net, dropout_keep_prob, is_training=is_training, 
-                               scope='dropout')
+            net = slim.dropout(net, dropout_keep_prob, is_training=is_training, scope='dropout')
             
         ### 2: hidden layer 2
         # 1 x 4096 --> 1 x 1024
         with tf.variable_scope('hidden2'):
             net = slim.fully_connected(net, hidden_layer_notes[1], scope='fc')
-            net = slim.dropout(net, dropout_keep_prob, is_training=is_training, 
-                               scope='dropout')
+            net = slim.dropout(net, dropout_keep_prob, is_training=is_training, scope='dropout')
 
         ### 3: hidden layer 3
         # 1 x 1024 --> 1 x 256
         with tf.variable_scope('hidden3'):
             net = slim.fully_connected(net, hidden_layer_notes[2], scope='fc')
-            net = slim.dropout(net, dropout_keep_prob, is_training=is_training, 
-                               scope='dropout')
+            net = slim.dropout(net, dropout_keep_prob, is_training=is_training, scope='dropout')
 
         ### 4: hidden layer 4
         # 1 x 256 --> 1 x 64
         with tf.variable_scope('hidden4'):
             net = slim.fully_connected(net, hidden_layer_notes[3], scope='fc')
-            net = slim.dropout(net, dropout_keep_prob, is_training=is_training, 
-                               scope='dropout')
+            net = slim.dropout(net, dropout_keep_prob, is_training=is_training, scope='dropout')
             
         ### 5: output layer
         # 1 x 64 --> 1 x num_classes
         with tf.variable_scope('output'):
-            net = slim.fully_connected(net, num_classes, activation_fn=None, 
-                                       scope='fc')
+            net = slim.fully_connected(net, num_classes, activation_fn=None, scope='fc')
 
         ### return
         return net
