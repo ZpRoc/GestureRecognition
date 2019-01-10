@@ -20,6 +20,12 @@
         4.  [Display Sample](#3-3-4-Display-Sample)
         5.  [Test Sample](#3-3-5-Test-Sample)
         6.  [Auto Running](#3-3-6-Auto-Running)
+4.  [Deep Learning](#4-Deep-Learning)
+    1.  [Network Architecture](#4-1-Network-Architecture)
+    2.  [Data Distribution](#4-2-Data-Distribution)
+    3.  [Training Parameters](#4-3-Training-Parameters)
+5.  [Issues](#5-Issues)
+    1.  
 
 
 
@@ -216,15 +222,120 @@ graph TD
 
 ## 4 Deep Learning
 
+>   All codes are based on `Python 3.6.7 64-bit (TendorFlow)` using `Visual Studio Code`.
 
+### 4-1 Network Architecture
 
+A DNN(Deep Neural Network) architecture. (Multilayer perceptron 多层感知器)
 
+```python
+def dnn_5(inputs, num_classes=6, is_training=True, dropout_keep_prob=0.8, 
+          reuse=tf.AUTO_REUSE, scope='dnn_5'):
+    ''' A DNN architecture with 4 hidden layers. 
 
+        input --> (hidden layer) x 4 --> output
 
+        hidden_layer_notes = [4096, 1024, 256, 64]
+        1 x 4500 --> 1 x 4096 --> 1 x 1024 --> 1 x 256 
+        		 --> 1 x 64 --> 1 x num_output
+
+        Args:
+            inputs           : The input data sets whose shape likes [1 x 4500]. 
+            num_classes      : The number of output classes. 
+            is_training      : Is training? 
+            				   if yes, it will ignore dropout_keep_prob.  
+            dropout_keep_prob: The value of dropout parameter. 
+            reuse            : 
+            scope            :
+
+        Return:
+            net: The output of the net which do not input tf.nn.softmax. 
+
+        Raise:
+
+    '''
+    with tf.variable_scope(scope, 'dnn_5', [inputs], reuse=reuse):
+        ### hidden_layer_notes
+        hidden_layer_notes = [4096, 1024, 256, 64]
+
+        ### 1: hidden layer 1
+        # 1 x 4500 --> 1 x 4096
+        with tf.variable_scope('hidden1'):
+            net = slim.fully_connected(inputs, hidden_layer_notes[0], scope='fc')
+            net = slim.dropout(net, dropout_keep_prob, is_training=is_training, 
+                               scope='dropout')
+            
+        ### 2: hidden layer 2
+        # 1 x 4096 --> 1 x 1024
+        with tf.variable_scope('hidden2'):
+            net = slim.fully_connected(net, hidden_layer_notes[1], scope='fc')
+            net = slim.dropout(net, dropout_keep_prob, is_training=is_training, 
+                               scope='dropout')
+
+        ### 3: hidden layer 3
+        # 1 x 1024 --> 1 x 256
+        with tf.variable_scope('hidden3'):
+            net = slim.fully_connected(net, hidden_layer_notes[2], scope='fc')
+            net = slim.dropout(net, dropout_keep_prob, is_training=is_training, 
+                               scope='dropout')
+
+        ### 4: hidden layer 4
+        # 1 x 256 --> 1 x 64
+        with tf.variable_scope('hidden4'):
+            net = slim.fully_connected(net, hidden_layer_notes[3], scope='fc')
+            net = slim.dropout(net, dropout_keep_prob, is_training=is_training, 
+                               scope='dropout')
+            
+        ### 5: output layer
+        # 1 x 64 --> 1 x num_classes
+        with tf.variable_scope('output'):
+            net = slim.fully_connected(net, num_classes, activation_fn=None, 
+                                       scope='fc')
+
+        ### return
+        return net
+```
+
+### 4-2 Data Distribution
+
+|       | Standing | Sitting | Walking | StandUp | SitDown | TurnBack | All  |
+| :---: | :------: | :-----: | :-----: | :-----: | :-----: | :------: | :--: |
+| train |   227    |   229   |   135   |   193   |   194   |   150    | 1128 |
+|  vld  |    0     |    0    |    0    |    0    |    0    |    0     |  0   |
+| test  |    51    |   70    |   30    |   43    |   57    |    30    | 281  |
+|  All  |   278    |   299   |   165   |   236   |   251   |   180    | 1409 |
+
+### 4-3 Training Parameters
+
+```
+# ----------------------------------------------------------------------- #
+# ------------------------ Run net at 2018-12-19 ------------------------ #
+# ----------------------------------------------------------------------- #
+# ---------------- train_step: 15000
+# ---------------- batch_size: 32
+# ---------------- learning_rate: 0.0001
+# ---------------- dropout_keep_prob: 1.0
+
+# ---------------- Test accuracy: 93.5943 %
+```
 
 
 
 ## 5 Issues
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
