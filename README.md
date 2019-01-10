@@ -12,11 +12,14 @@
     3.  [Examples](#2-3-Examples)
 3.  [Demo](#3-Demo)
     1.  [Interface](#3-1-Interface)
-    2.  [Data](#3-2-Data)
-        1.  [Output Folder Tree](#3-2-1-Output-Folder-Tree)
-        2.  [Write data](#3-2-2-Write-data)
-        3.  [Labeling](#3-2-3-Labeling)
-        4.  [Display Sample](#3-2-4-Display-Sample)
+    2.  [Output Folder Tree](#3-2-Output-Folder-Tree)
+    3.  [Running](#3-3-Running)
+        1.  [Capture](#3-3-1-Capture)
+        2.  [Write data](#3-3-2-Write-data)
+        3.  [Labeling](#3-3-3-Labeling)
+        4.  [Display Sample](#3-3-4-Display-Sample)
+        5.  [Test Sample](#3-3-5-Test-Sample)
+        6.  [Auto Running](#3-3-6-Auto-Running)
 
 
 
@@ -65,8 +68,6 @@
 
 
 
-
-
 ## 2 NUITRACK
 
 >   All instructions are based on `NUITRACK 1.3.8`. 
@@ -94,8 +95,6 @@
 -   [nuitrack_csharp_sample/Program.cs](http://download.3divi.com/Nuitrack/doc/nuitrack_csharp_sample_2Program_8cs-example.html) :star:
 -   [nuitrack_gl_sample/src/main.cpp](http://download.3divi.com/Nuitrack/doc/nuitrack_gl_sample_2src_2main_8cpp-example.html)
 -   [nuitrack_ni_gl_sample/src/main.cpp](http://download.3divi.com/Nuitrack/doc/nuitrack_ni_gl_sample_2src_2main_8cpp-example.html)
-
-
 
 
 
@@ -145,9 +144,7 @@
     -   `2nd button`: Open label folder.
     -   `3rd button`: Display label sample.
 
-### 3-2 Data
-
-#### 3-2-1 Output Folder Tree
+### 3-2 Output Folder Tree
 
 ```mermaid
 graph TD
@@ -174,36 +171,46 @@ graph TD
 	Dx --> E3
 ```
 
-#### 3-2-2 Write data
+### 3-3 Running
 
--   When the `Write` button is clicked, the folder will be created under the `Output` folder with the format of current time `yyyy-MM-dd HH-mm-ss` as the folder name. For example, creating a folder named `2019-01-10 10-40-54`. 
+#### 3-3-1 Capture
+
+-   Make sure the computer is connected to the depth camera. 
+-   Click `Grab` button, the images will be displayed in real time.  
+
+#### 3-3-2 Write data
+
+-   Click `Write` button, the folder will be created under the `Output` folder with the format of current time `yyyy-MM-dd HH-mm-ss` as the folder name. For example, creating a folder named `2019-01-10 10-40-54`. 
 -   Further, in the `2019-01-10 10-40-54` folder, two folder named `Images` and `Labels` are created and a txt file named `Data` is generated. 
     -   `Images`: The color image with the joint position of the body using square red dots. 
     -   `Labels`: Txt and md files for each label.
     -   `Data.txt`: The information of the skeleton data. Normally, only the word `Skeleton data (X, Y, Z) * 25 points. `. 
+-   Click `Grab` button to capture image, at the same time, write images and data. Which one of the `Grab` button and the `Write` button is pressed first, there is no requirement for use.
 
-#### 3-2-3 Labeling
+#### 3-3-3 Labeling
 
--   After writing the data, switch to interface 2, click the `Load Data` button, and select the `data.txt` file under the selected folder.
+-   After writing the data, stop `Grab` and `Write`, switch to interface 2, click the `Load Data` button, and select the `data.txt` file under the selected folder.
 -   In the interface ⑦, all the skeleton data lists under the selected folder are displayed. The small flag indicates that the data under the index is valid. 
 -   Next, you need to select enough continuous data manually, or use the `Auto` button to let the program  select the data automatically. 
 -   While you select the data, Interface ① will display the images, determine the current gesture manually based on the image information, and click the corresponding `1st button` in interface ⑩. after that, a sample will be automatically saved.
 
-#### 3-2-4 Display Sample
+#### 3-3-4 Display Sample
 
 -   Same as `labeling`, click the `Load Data` button, and select the `data.txt` file under the selected folder.
 -   Click the corresponding `2nd button` in interface ⑩, the program will automatically open the save path of the selected label's sample.
 -   Click the corresponding `3rd button` in interface ⑩, the program will automatically display the images of the selected sample in interface ①.
 
+#### 3-3-5 Test Sample
 
+-   Click the `Load` button in interface ⑤ and select the `.pb` model file to be tested. 
+-   The first call to the model requires 3000ms to run, and the next run is less than 10ms. I do not know why. So when I load the model, I will call the model once to ensure that it will not time out when it is running automatically.
+-   Click the `Test` button in interface ⑤ and select a sample, then the result will be displayed in ②. 
 
+#### 3-3-6 Auto Running
 
-
-
-
-
-
-
+-   Click the `Auto` button in interface ④, the program will automatically load the preset model, the model path can be modified by the `m_PB_URL` variable.
+-   Click `Grab` button. 
+-   Start your performance. 
 
 
 
