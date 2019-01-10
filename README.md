@@ -7,6 +7,12 @@
     4.  [Source Code](#1-4-Source-Code)
     5.  [More](#1-5-More)
 2.  [NUITRACK](#2-NUITRACK)
+    1.  [Download](#2-1-Download)
+    2.  [Install](#2-2-Install)
+    3.  [Examples](#2-3-Examples)
+3.  [Demo](#3-Demo)
+    1.  [Interface](#3-1-Interface)
+    2.  
 
 
 
@@ -73,6 +79,11 @@
 
 -   [Installation Instructions ](http://download.3divi.com/Nuitrack/doc/Installation_page.html)
 
+    -   Download and run [nuitrack-windows-x86.exe](http://download.3divi.com/Nuitrack/platforms/nuitrack-windows-x86.exe) (for Windows 32-bit) or [nuitrack-windows-x64.exe](http://download.3divi.com/Nuitrack/platforms/nuitrack-windows-x64.exe) (for Windows 64-bit). Follow the instructions of the NUITRACK setup assistant. 
+    -   Re-login to let the system changes take effect. 
+
+    >   Normally, only the two steps need to be performed if your computer has been installed `Visual Studio`.
+
 ### 2-3 Examples
 
 -   [nuitrack_console_sample/src/main.cpp](http://download.3divi.com/Nuitrack/doc/nuitrack_console_sample_2src_2main_8cpp-example.html)
@@ -120,39 +131,33 @@
         -   `1st number` indicates that the data of each 60 frames is combined into one sample.
         -   `2nd number` indicates that overlaps the data of 30 frames between every two samples.
 -   ③: Search and select data.
-    -   `Search`: 
-    -   `Auto`: 
-    -   `▶`:
-    -   `Delay`: 
-    -   `Dlt`: 
+    -   `Search`: Search and display the images of the sample
+    -   `Auto`: Auto select the next batch images, `batchSize = CombineData`.
+    -   `▶`: Display the select data and images.
+    -   `Delay`: Display image delay time.
+    -   `Dlt`: Delete useless images after labeling.
 -   ④: Labeling, 3 buttons per label.
-    -   `1st button`: 
-    -   `2nd button`: 
-    -   `3rd button`: 
+    -   `1st button`: Write label data. 
+    -   `2nd button`: Open label folder.
+    -   `3rd button`: Display label sample.
 
+### 3-2 Data Format
 
+#### 3-2-1 Output Folder Tree
 
-## 4 Data Collection
-
-
-
-
-
-
-
-
-
-## 5 Network Training
-
-
-
-
-
-
-
-
-
-## 6 Network Calling
+```mermaid
+graph TD
+	A(Application.StartupPath)
+	B1(Output: Save the skeleton data)
+	B2(Model: Save the pb model)
+	C0(All: Save the skeleton data, only txt and md files)
+	Cx(yyyy-MM-dd HH-mm-ss: Save the skeleton data including images)
+	
+	A --> B1
+	A --> B2
+	B1 --> C0
+	B1 --> Cx
+```
 
 
 
@@ -162,7 +167,17 @@
 
 
 
-## 7 Issues
+## 4 Deep Learning
+
+
+
+
+
+
+
+
+
+## 5 Issues
 
 
 
