@@ -59,8 +59,7 @@
 
 ### 1-4 Source Code
 
--   [Source Code](https://github.com/IntelRealSense/librealsense/archive/v2.17.1.zip)
--   Contains a folder named `librealsense-2.17.1`
+-   [Source Code](https://github.com/IntelRealSense/librealsense/archive/v2.17.1.zip): Contains a folder named `librealsense-2.17.1`
 -   Need to use `CMake ` for source code compilation
     -   Create a new folder `build` under folder `librealsense-2.17.1`
     -   Folder `librealsense-2.17.1` is the source code path
@@ -119,14 +118,14 @@
 
 -   ①: Display the color image and the skeleton data with red square dots.
 -   ②: Display the judged gesture: `Standing`, `Sitting`, `Walking`, `StandUp`, `SitDown`, `TurnBack`.
--   ③: Display the skeleton data, 25 points (XYZ) per frame.
+-   ③: Display the skeleton data, 25 points (XYZ, 75 float data) per frame.
 -   ④: The main control
-    -   `Grab`: Start or Stop the camera grab.
+    -   `Grab`: Start or stop the camera grab.
     -   `Write`: Enabled or disabled write skeleton data.
     -   `Auto`: Enabled or disabled recognize the gesture automatically.
     -   `FPS`: Frame per second, also timer grab interval equals `1000.0 / FPS`.
-    -   `W`: The width of image. 
-    -   `H`: The height of image. 
+    -   `W`: The width of image, read only.
+    -   `H`: The height of image, read only.
 -   ⑤: Load and test `.pb` model
     -   `Load`: Load a `.pb` model.
     -   `Test`: Test a sample using the loaded model.
@@ -138,15 +137,15 @@
 
 -   ⑦: Display the skeleton data index. The small flag indicates that the data under the index is valid. 
 -   ⑧: Load and config data.
-    -   `Load`: Select a `.txt` file, see `3-2` for more instructions.
+    -   `Load`: Select a `.txt` file, see [3-2 Output Folder Tree](#3-2-Output-Folder-Tree) for more instructions.
     -   Combine data: 
         -   `1st number` indicates that the data of each 60 frames is combined into one sample.
         -   `2nd number` indicates that overlaps the data of 30 frames between every two samples.
 -   ⑨: Search and select data.
-    -   `Search`: Search and display the images of the sample
-    -   `Auto`: Auto select the next batch images, `batchSize = CombineData`.
+    -   `Search`: Search and display the images of the sample.
+    -   `Auto`: Auto select the next batch images, `batchSize = CombineData(1st number)`.
     -   `▶`: Display the select data and images.
-    -   `Delay`: Display image delay time.
+    -   `Delay`: The delay time of display image.
     -   `Dlt`: Delete useless images after labeling.
 -   ⑩: Labeling, 3 buttons per label.
     -   `1st button`: Write label data. 
@@ -320,7 +319,7 @@ def dnn_5(inputs, num_classes=6, is_training=True, dropout_keep_prob=0.8, reuse=
 
 ### 5-1 Fix Camera Position
 
->   In my current experiment, the height of the camera is about 75cm, and the angle of the camera is horizontal forward. All data collected is based on this premise.
+>   In my current experiment, the height of the camera is about 75 cm, and the angle of the camera is horizontal forward. All data collected is based on this premise.
 >
 >   This causes the gesture recognition result to deteriorate when the camera height or the camera angle is changed. 
 >
