@@ -25,7 +25,10 @@
     2.  [Data Distribution](#4-2-Data-Distribution)
     3.  [Training Parameters](#4-3-Training-Parameters)
 5.  [Issues](#5-Issues)
-    1.  
+    1.  [Fix Camera Position](#5-1-Fix-Camera-Position)
+    2.  [More Data](#5-2-More-Data)
+    3.  [Network Optimization](#5-3-Network-Optimization)
+    4.  [Interface Display Delay](#5-4-Interface-Display-Delay)
 
 
 
@@ -315,9 +318,38 @@ def dnn_5(inputs, num_classes=6, is_training=True, dropout_keep_prob=0.8, reuse=
 
 ## 5 Issues
 
+### 5-1 Fix Camera Position
 
+>   In my current experiment, the height of the camera is about 75cm, and the angle of the camera is horizontal forward. All data collected is based on this premise.
+>
+>   This causes the gesture recognition result to deteriorate when the camera height or the camera angle is changed. 
+>
+>   For example, when raising the height of the camera, `Standing` is easily judged as `Sitting`.
 
+-   I think the initial work should be to determine where the camera is installed.
+-   Fix camera position, like fixing the camera to the corner of the ceiling of the room, which can make sure the field of view to cover the entire room.
 
+### 5-2 More Data
+
+>   Now, I only have 1409 samples. For deep learning, this number is too small.
+
+-   I suggest finding more people and collecting more data after fixing the camera.
+
+### 5-3 Network Optimization
+
+>   I combine 60 frames of images with 25 points (75 float numbers) per frame, so 4500 float numbers are combined into a vector sample. 
+
+-   The composition of the sample needs to be optimized. 
+
+>   The network architecture is based on `Multilayer Perceptron`. 
+
+-   It is the simplest network, so there is still a lot of optimization space.
+
+### 5-4 Interface Display Delay
+
+>   In the automatic running state, the gesture name displayed on interface ② has obvious delay.
+
+-   Demo program bug, I will fix it as soon as possible.
 
 
 
