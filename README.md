@@ -348,7 +348,7 @@ def dnn_5(inputs, num_classes=6, is_training=True, dropout_keep_prob=0.8, reuse=
 
 >   In the automatic running state, the gesture name displayed on interface ② has obvious delay.
 
--   Demo program bug, I will fix it as soon as possible.
+-   Demo program bug, I will fix it as soon as possible. 
 
 
 
