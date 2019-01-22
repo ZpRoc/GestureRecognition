@@ -339,6 +339,7 @@ def dnn_5(inputs, num_classes=6, is_training=True, dropout_keep_prob=0.8, reuse=
 >   I combine 60 frames of images with 25 points (75 float numbers) per frame, so 4500 float numbers are combined into a vector sample. 
 
 -   The composition of the sample needs to be optimized. 
+-   May be able to form a two-dimensional matrix, then you can use convolution. 
 
 >   The network architecture is based on `Multilayer Perceptron`. 
 
