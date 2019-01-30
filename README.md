@@ -327,6 +327,7 @@ def dnn_5(inputs, num_classes=6, is_training=True, dropout_keep_prob=0.8, reuse=
 
 -   I think the initial work should be to determine where the camera is installed.
 -   Fix camera position, like fixing the camera to the corner of the ceiling of the room, which can make sure the field of view to cover the entire room.
+-   Or calibration of the relative position between the camera and the human body (20190130).
 
 ### 5-2 More Data
 
