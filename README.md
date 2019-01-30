@@ -333,6 +333,7 @@ def dnn_5(inputs, num_classes=6, is_training=True, dropout_keep_prob=0.8, reuse=
 
 >   Now, I only have 1409 samples. For deep learning, this number is too small.
 
+-   The XYZ coordinates of some joints are always `(0, 0, 0)`, but I do not know why. 
 -   I suggest finding more people and collecting more data after fixing the camera.
 
 ### 5-3 Network Optimization
